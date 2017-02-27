@@ -48,9 +48,9 @@ public class TestTransportOntology
     individuals.setNsPrefix("tr", Transport.NS);
 
 
-    Individual sender = individuals.createIndividual(prefix+"sender", won.transport.ont.Logico.Consignor);
-    Individual recipient = individuals.createIndividual(prefix+"recipient", won.transport.ont.Logico.Consignee);
-    Individual consignment = individuals.createIndividual(prefix+"consignment", won.transport.ont.Transport.Consignment);
+    Individual sender = individuals.createIndividual(prefix+"sender", Logico.Consignor);
+    Individual recipient = individuals.createIndividual(prefix+"recipient", Logico.Consignee);
+    Individual consignment = individuals.createIndividual(prefix+"consignment", Transport.Consignment);
     consignment.addProperty(Transport.hasConsignee, recipient);
     consignment.addProperty(Transport.hasConsignor, sender);
 
