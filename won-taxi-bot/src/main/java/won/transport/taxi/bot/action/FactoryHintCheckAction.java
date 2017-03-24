@@ -8,6 +8,7 @@ import won.bot.framework.eventbot.event.impl.wonmessage.HintFromMatcherEvent;
 import won.protocol.model.Match;
 import won.transport.taxi.bot.client.MobileBooking;
 import won.transport.taxi.bot.event.FactoryHintEvent;
+import won.transport.taxi.bot.util.FactoryUtils;
 
 import java.net.URI;
 
@@ -24,28 +25,21 @@ public class FactoryHintCheckAction extends BaseEventBotAction {
 
     @Override
     protected void doRun(Event event) throws Exception {
-        if(event instanceof HintFromMatcherEvent) {
-            Match match = ((HintFromMatcherEvent) event).getMatch();
+        if(!(event instanceof HintFromMatcherEvent)) {
+            logger.error("FactoryHintCheckAction can only handle HintFromMatcherEvent");
+            return;
+        }
+        Match match = ((HintFromMatcherEvent) event).getMatch();
 
-            URI ownUri = match.getFromNeed();
-            URI requesterUri = match.getToNeed();
+        URI ownUri = match.getFromNeed();
+        URI requesterUri = match.getToNeed();
 
-            boolean correspondingFactoryNeedExists = false;
-
-            for(URI factoryNeedURI : getEventListenerContext().getBotContext().getNamedNeedUriList(factoryListName)){
-                if(factoryNeedURI.equals(ownUri)){
-                    correspondingFactoryNeedExists = true;
-                    break;
-                }
-            }
-
-            if(correspondingFactoryNeedExists) {
-                logger.debug("FactoryHint for factoryURI: " + ownUri + " from the requesterUri: "+requesterUri);
-                EventBus bus = getEventListenerContext().getEventBus();
-                bus.publish(new FactoryHintEvent(requesterUri, ownUri));
-            }else{
-                logger.warn("NON FactoryHint for URI: " + ownUri + " from the requesterUri: "+requesterUri+" ignore the hint");
-            }
+        if(FactoryUtils.isUriInList(getEventListenerContext(),factoryListName, ownUri)) {
+            logger.debug("FactoryHint for factoryURI: " + ownUri + " from the requesterUri: "+requesterUri);
+            EventBus bus = getEventListenerContext().getEventBus();
+            bus.publish(new FactoryHintEvent(requesterUri, ownUri));
+        }else{
+            logger.warn("NON FactoryHint for URI: " + ownUri + " from the requesterUri: "+requesterUri+" ignore the hint");
         }
     }
 }

@@ -34,39 +34,42 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
 
     @Override
     protected void doRun(Event event) throws Exception {
-        if(event instanceof FactoryHintEvent) {
-            FactoryHintEvent factoryHintEvent = (FactoryHintEvent) event;
-
-            EventBus bus = getEventListenerContext().getEventBus();
-            EventListenerContext ctx = getEventListenerContext();
-            final URI wonNodeUri = ctx.getNodeURISource().getNodeURI();
-
-            Model factoryOfferModel = createFactoryOfferFromTemplate(ctx, factoryHintEvent.getFactoryNeedURI(), factoryHintEvent.getRequesterURI());
-            URI factoryOfferURI = WonRdfUtils.NeedUtils.getNeedURI(factoryOfferModel);
-
-            logger.debug("creating factoryoffer on won node {} with content {} ", wonNodeUri, StringUtils.abbreviate(RdfUtils.toString(factoryOfferModel), 150));
-
-            WonMessage createNeedMessage = createWonMessage(ctx.getWonNodeInformationService(), factoryOfferURI, wonNodeUri, factoryOfferModel, this.usedForTesting, this.doNotMatch);
-            EventBotActionUtils.rememberInList(ctx, factoryOfferURI, uriListName);
-
-            EventListener successCallback = successEvent -> {
-                logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
-                bus.publish(new FactoryOfferCreatedEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), wonNodeUri, factoryOfferModel, null));
-            };
-
-            EventListener failureCallback = failureEvent -> {
-                String textMessage = WonRdfUtils.MessageUtils.getTextMessage(((FailureResponseEvent) failureEvent).getFailureMessage());
-
-                logger.debug("factoryoffer creation failed for need URI {}, original message URI {}: {}", new Object[]{factoryOfferURI, ((FailureResponseEvent) failureEvent).getOriginalMessageURI(), textMessage});
-                EventBotActionUtils.removeFromList(getEventListenerContext(), factoryOfferURI, uriListName);
-            };
-
-            EventBotActionUtils.makeAndSubscribeResponseListener(createNeedMessage, successCallback, failureCallback, getEventListenerContext());
-
-            logger.debug("registered listeners for response to message URI {}", createNeedMessage.getMessageURI());
-            getEventListenerContext().getWonMessageSender().sendWonMessage(createNeedMessage);
-            logger.debug("factoryoffer creation message sent with message URI {}", createNeedMessage.getMessageURI());
+        if(!(event instanceof FactoryHintEvent)) {
+            logger.error("CreateFactoryOfferAction can only handle FactoryHintEvent");
+            return;
         }
+        FactoryHintEvent factoryHintEvent = (FactoryHintEvent) event;
+
+        EventBus bus = getEventListenerContext().getEventBus();
+        EventListenerContext ctx = getEventListenerContext();
+        final URI wonNodeUri = ctx.getNodeURISource().getNodeURI();
+
+        Model factoryOfferModel = createFactoryOfferFromTemplate(ctx, factoryHintEvent.getFactoryNeedURI(), factoryHintEvent.getRequesterURI());
+        URI factoryOfferURI = WonRdfUtils.NeedUtils.getNeedURI(factoryOfferModel);
+
+        logger.debug("creating factoryoffer on won node {} with content {} ", wonNodeUri, StringUtils.abbreviate(RdfUtils.toString(factoryOfferModel), 150));
+
+        WonMessage createNeedMessage = createWonMessage(ctx.getWonNodeInformationService(), factoryOfferURI, wonNodeUri, factoryOfferModel, this.usedForTesting, this.doNotMatch);
+        EventBotActionUtils.rememberInList(ctx, factoryOfferURI, uriListName);
+
+        EventListener successCallback = successEvent -> {
+            logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
+            bus.publish(new FactoryOfferCreatedEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), wonNodeUri, factoryOfferModel, null));
+        };
+
+        EventListener failureCallback = failureEvent -> {
+            String textMessage = WonRdfUtils.MessageUtils.getTextMessage(((FailureResponseEvent) failureEvent).getFailureMessage());
+
+            logger.debug("factoryoffer creation failed for need URI {}, original message URI {}: {}", new Object[]{factoryOfferURI, ((FailureResponseEvent) failureEvent).getOriginalMessageURI(), textMessage});
+            EventBotActionUtils.removeFromList(getEventListenerContext(), factoryOfferURI, uriListName);
+        };
+
+        EventBotActionUtils.makeAndSubscribeResponseListener(createNeedMessage, successCallback, failureCallback, getEventListenerContext());
+
+        logger.debug("registered listeners for response to message URI {}", createNeedMessage.getMessageURI());
+        getEventListenerContext().getWonMessageSender().sendWonMessage(createNeedMessage);
+        logger.debug("factoryoffer creation message sent with message URI {}", createNeedMessage.getMessageURI());
+
     }
 
     private Model createFactoryOfferFromTemplate(EventListenerContext ctx, URI factoryNeedURI, URI requesterURI){

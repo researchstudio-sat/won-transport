@@ -33,31 +33,33 @@ public class InitFactoryAction extends AbstractCreateNeedAction {
 
     @Override
     protected void doRun(Event event) throws Exception {
-        if(event instanceof InitializeEvent){
-            logger.debug("initializing the taxibot");
+        if(!(event instanceof InitializeEvent)) {
+            logger.error("InitFactoryAction can only handle InitializeEvent");
+            return;
+        }
+        logger.debug("initializing the taxibot");
 
-            List<Model> factoryNeeds = getInitFactoryNeeds();
-            logger.debug("checking existance of "+factoryNeeds.size()+" FactoryNeeds");
+        List<Model> factoryNeeds = getInitFactoryNeeds();
+        logger.debug("checking existance of "+factoryNeeds.size()+" FactoryNeeds");
 
-            List<URI> initializedFactoryNeedUris = getEventListenerContext().getBotContext().getNamedNeedUriList(factoryListName);
+        List<URI> initializedFactoryNeedUris = getEventListenerContext().getBotContext().getNamedNeedUriList(factoryListName);
 
-            for(Model factoryNeed : factoryNeeds) {
-                boolean isInitialized = false;
-                URI factoryNeedURI = WonRdfUtils.NeedUtils.getNeedURI(factoryNeed);
+        for(Model factoryNeed : factoryNeeds) {
+            boolean isInitialized = false;
+            URI factoryNeedURI = WonRdfUtils.NeedUtils.getNeedURI(factoryNeed);
 
-                for(URI initializedFactoryNeedUri : initializedFactoryNeedUris){
-                    if(initializedFactoryNeedUri.equals(factoryNeedURI)){
-                        isInitialized = true;
-                        break;
-                    }
+            for(URI initializedFactoryNeedUri : initializedFactoryNeedUris){
+                if(initializedFactoryNeedUri.equals(factoryNeedURI)){
+                    isInitialized = true;
+                    break;
                 }
+            }
 
-                if(!isInitialized){
-                    logger.debug("initializing factoryneed with uri: "+factoryNeedURI);
-                    initializeFactoryNeed(factoryNeed);
-                }else{
-                    logger.debug("factoryneed with uri: "+factoryNeedURI+" already exists");
-                }
+            if(!isInitialized){
+                logger.debug("initializing factoryneed with uri: "+factoryNeedURI);
+                initializeFactoryNeed(factoryNeed);
+            }else{
+                logger.debug("factoryneed with uri: "+factoryNeedURI+" already exists");
             }
         }
     }

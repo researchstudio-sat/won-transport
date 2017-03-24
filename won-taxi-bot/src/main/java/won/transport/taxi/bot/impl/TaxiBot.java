@@ -2,17 +2,17 @@ package won.transport.taxi.bot.impl;
 
 import won.bot.framework.bot.base.EventBot;
 import won.bot.framework.eventbot.EventListenerContext;
-import won.bot.framework.eventbot.action.impl.wonmessage.ConnectWithAssociatedNeedAction;
+import won.bot.framework.eventbot.action.impl.MultipleActions;
+import won.bot.framework.eventbot.action.impl.needlifecycle.DeactivateNeedAction;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.lifecycle.InitializeEvent;
+import won.bot.framework.eventbot.event.impl.mail.OpenConnectionEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.HintFromMatcherEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
-import won.protocol.model.FacetType;
-import won.transport.taxi.bot.action.ConnectFactoryOfferAction;
-import won.transport.taxi.bot.action.FactoryHintCheckAction;
-import won.transport.taxi.bot.action.InitFactoryAction;
-import won.transport.taxi.bot.action.CreateFactoryOfferAction;
+import won.transport.taxi.bot.action.*;
 import won.transport.taxi.bot.client.MobileBooking;
 import won.transport.taxi.bot.event.FactoryHintEvent;
 import won.transport.taxi.bot.event.FactoryOfferCreatedEvent;
@@ -54,17 +54,33 @@ public class TaxiBot extends EventBot{
 
         bus.subscribe(FactoryOfferCreatedEvent.class,
             new ActionOnEventListener(
-                    ctx,
-                    "FactoryOfferCreatedEvent",
-                    new ConnectFactoryOfferAction(ctx)
+                ctx,
+                "FactoryOfferCreatedEvent",
+                new ConnectFactoryOfferAction(ctx)
             ));
 
-        /*bus.subscribe(MessageFromOtherNeedEvent.class,
+        bus.subscribe(MessageFromOtherNeedEvent.class,
             new ActionOnEventListener(
                 ctx,
                 "MessageReceived",
-                null
-            ));*/
+                null//TODO: ADD ACTION
+            ));
+
+        bus.subscribe(OpenFromOtherNeedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "FactoryOfferOpened",
+                new OpenedFactoryOfferAction(ctx, NAME_FACTORYNEEDS)
+            ));
+
+        bus.subscribe(CloseFromOtherNeedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                    "FactoryOfferClosed",
+                    new MultipleActions(ctx,
+                        new DeactivateNeedAction(ctx)/*,
+                        //TODO CALL ACTION TO CANCEL ORDER*/)
+            ));
     }
 
     // ******* SETTER**********

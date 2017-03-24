@@ -26,6 +26,7 @@ public class ConnectFactoryOfferAction extends BaseEventBotAction{
     protected void doRun(Event event) throws Exception {
         if(!(event instanceof FactoryOfferCreatedEvent)) {
             logger.error("ConnectFactoryOfferAction can only handle FactoryOfferCreatedEvents");
+            return;
         }
 
         final URI factoryOfferURI = ((FactoryOfferCreatedEvent) event).getNeedURI();
