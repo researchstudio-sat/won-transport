@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by fsuda on 02.03.2017.
+ * Creates all provided FactoryNeeds
  */
-public class InitBotAction extends AbstractCreateNeedAction {
-    private static final String NAME_FACTORYNEEDS = "taxiBotFactoryNeeds";
+public class InitFactoryAction extends AbstractCreateNeedAction {
+    private String factoryListName;
 
-    public InitBotAction(EventListenerContext eventListenerContext, String uriListName, URI... facets) {
+    public InitFactoryAction(EventListenerContext eventListenerContext, String factoryListName, String uriListName, URI... facets) {
         super(eventListenerContext, uriListName, false, false, facets);
+        this.factoryListName = factoryListName;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class InitBotAction extends AbstractCreateNeedAction {
             List<Model> factoryNeeds = getInitFactoryNeeds();
             logger.debug("checking existance of "+factoryNeeds.size()+" FactoryNeeds");
 
-            List<URI> initializedFactoryNeedUris = getEventListenerContext().getBotContext().getNamedNeedUriList(NAME_FACTORYNEEDS);
+            List<URI> initializedFactoryNeedUris = getEventListenerContext().getBotContext().getNamedNeedUriList(factoryListName);
 
             for(Model factoryNeed : factoryNeeds) {
                 boolean isInitialized = false;
@@ -69,7 +70,7 @@ public class InitBotAction extends AbstractCreateNeedAction {
                 .setTitle("Taxi In Wien")
                 .setBasicNeedType(BasicNeedType.SUPPLY)
                 .setDescription("Biete Taxifahrten in Wien")
-                .setUri(URI.create("https://satsrv06.researchstudio.at/won/resource/need/bbi881b2asjxk62bdrcf"))
+                .setUri(URI.create("https://satsrv06.researchstudio.at/won/resource/need/bbi881b2asjxk62bdrc"))
                 .setTags(new String[]{"Taxi", "Wien"})
                 .setFacetTypes(facets)
                 .build();
@@ -80,7 +81,7 @@ public class InitBotAction extends AbstractCreateNeedAction {
                 .setTitle("Taxi In Salzburg")
                 .setBasicNeedType(BasicNeedType.SUPPLY)
                 .setDescription("Biete Taxifahrten in Salzburg")
-                .setUri(URI.create("https://satsrv06.researchstudio.at/won/resource/need/bbi881b2asjxk62bsalz"))
+                .setUri(URI.create("https://satsrv06.researchstudio.at/won/resource/need/bbi881b2asjxk62bsal"))
                 .setTags(new String[]{"Taxi", "Salzburg"})
                 .setFacetTypes(facets)
                 .build();
@@ -101,7 +102,7 @@ public class InitBotAction extends AbstractCreateNeedAction {
 
         WonMessage createNeedMessage = createWonMessage(wonNodeInformationService, factoryNeedURI, wonNodeUri, factoryNeed, this.usedForTesting, this.doNotMatch);
         EventBotActionUtils.rememberInList(ctx, factoryNeedURI, uriListName);
-        EventBotActionUtils.rememberInList(ctx, factoryNeedURI, NAME_FACTORYNEEDS);
+        EventBotActionUtils.rememberInList(ctx, factoryNeedURI, factoryListName);
 
         EventListener successCallback = new EventListener() {
             @Override
@@ -120,7 +121,7 @@ public class InitBotAction extends AbstractCreateNeedAction {
                 if(!textMessage.startsWith("UriAlreadyInUseException")) {
                     logger.debug("need creation failed for need URI {}, original message URI {}: {}", new Object[]{factoryNeedURI, ((FailureResponseEvent) event).getOriginalMessageURI(), textMessage});
                     EventBotActionUtils.removeFromList(getEventListenerContext(), factoryNeedURI, uriListName);
-                    EventBotActionUtils.removeFromList(getEventListenerContext(), factoryNeedURI, NAME_FACTORYNEEDS);
+                    EventBotActionUtils.removeFromList(getEventListenerContext(), factoryNeedURI, factoryListName);
                 }else{
                     logger.debug("factoryneed creation not necessary for uri: {} as it already exists", new Object[]{factoryNeedURI});
                 }

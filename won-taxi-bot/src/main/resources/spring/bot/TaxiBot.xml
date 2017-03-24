@@ -40,5 +40,12 @@
                 <property name="fixedRate" value="false" />  <!-- fixed delay after completion -->
             </bean>
         </property>
+        <property name="mobileBooking" ref="mobileBooking"/>
+    </bean>
+
+    <bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBooking">
+        <property name="serverUrl" value="${api.serverUrl}"/>
+        <property name="username" value="${api.username}"/>
+        <property name="password" value="${api.password}"/>
     </bean>
 </beans>
