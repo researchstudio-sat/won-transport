@@ -1,14 +1,7 @@
 package won.transport.taxi.bot.client;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHost;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.ssl.*;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.glassfish.grizzly.http.util.HttpStatus;
@@ -18,7 +11,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import won.transport.taxi.bot.client.entity.Function;
@@ -26,7 +18,6 @@ import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
 import won.transport.taxi.bot.client.entity.Parameter.OrderType;
 import won.transport.taxi.bot.client.entity.Parameter.Parameter;
 
-import java.net.ConnectException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
