@@ -25,8 +25,9 @@
     <bean id="taxiBot" class="won.transport.taxi.bot.impl.TaxiBot">
         <!-- optional property, by default one echo need per each need will be created -->
 
-        <property name="botContext" ref="${botContext.impl}" />
+        <property name="botContextWrapper" ref="botContextWrapper" />
         <property name="taskScheduler" ref="taskScheduler" />
+        <property name="needProducer" ref="needProducer" />
         <property name="trigger">
             <bean class="org.springframework.scheduling.support.PeriodicTrigger">
                 <constructor-arg name="period" value="60000" />
@@ -38,9 +39,25 @@
         <property name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
+    <bean id="botContextWrapper" class="won.bot.framework.bot.context.FactoryBotContextWrapper">
+        <constructor-arg name="botContext" ref="${botContext.impl}"/>
+        <constructor-arg name="needCreateListName" value="taxiBotNeeds"/>
+        <constructor-arg name="factoryListName" value="taxiBotFactoryNeeds"/>
+        <constructor-arg name="factoryInternalIdName" value="taxiBotIdsToFactoryNeeds"/>
+    </bean>
+
     <bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBooking">
         <property name="serverUrl" value="${api.serverUrl}"/>
         <property name="username" value="${api.username}"/>
         <property name="password" value="${api.password}"/>
+    </bean>
+
+    <bean id="needProducer" class="won.bot.framework.component.needproducer.impl.DirectoryBasedNeedProducer">
+        <property name="directory" value="${taxibot.bot.factoryneedfolder}"/>
+        <property name="filenameFilterRegex" value="^[^\.].*\.ttl"/>
+        <property name="repeat" value="false"/>
+        <property name="fileBasedNeedProducer">
+            <bean class="won.bot.framework.component.needproducer.impl.TurtleFileNeedProducer"/>
+        </property>
     </bean>
 </beans>
