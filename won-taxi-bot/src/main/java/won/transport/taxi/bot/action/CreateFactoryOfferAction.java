@@ -19,12 +19,14 @@ package won.transport.taxi.bot.action;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
+import won.bot.framework.bot.context.FactoryBotContextWrapper;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.EventBotActionUtils;
 import won.bot.framework.eventbot.action.impl.needlifecycle.AbstractCreateNeedAction;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.command.connect.ConnectCommandEvent;
+import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.FailureResponseEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.message.WonMessage;
@@ -33,7 +35,6 @@ import won.protocol.util.NeedModelBuilder;
 import won.protocol.util.RdfUtils;
 import won.protocol.util.WonRdfUtils;
 import won.transport.taxi.bot.client.MobileBooking;
-import won.transport.taxi.bot.event.FactoryHintEvent;
 
 import java.net.URI;
 
@@ -41,10 +42,9 @@ import java.net.URI;
  * Creates a specific FactoryOffer (that will not be matched with anybody)
  */
 public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
-    private MobileBooking mobileBooking;
-
-    public CreateFactoryOfferAction(EventListenerContext eventListenerContext, MobileBooking mobileBooking, String uriListName, URI... facets) {
-        super(eventListenerContext, uriListName, false, true, facets);
+    public CreateFactoryOfferAction(EventListenerContext eventListenerContext, URI... facets) {
+        super(eventListenerContext, false, true, facets);
+        this.uriListName = ((FactoryBotContextWrapper) eventListenerContext.getBotContextWrapper()).getFactoryListName();
     }
 
     @Override
