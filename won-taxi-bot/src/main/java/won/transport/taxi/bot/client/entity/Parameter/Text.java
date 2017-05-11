@@ -20,8 +20,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import java.io.Serializable;
 
-@XmlRootElement(name="ORDERTYPE")
-public class OrderType extends Parameter implements Serializable {
+@XmlRootElement(name="TEXT")
+public class Text extends Parameter implements Serializable {
     @XmlValue
-    public String orderType="1";
+    public String text;
+
+    public Text() {
+    }
+
+    public Text(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

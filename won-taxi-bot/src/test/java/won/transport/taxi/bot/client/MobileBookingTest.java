@@ -63,6 +63,18 @@ public class MobileBookingTest {
     }
 
     @Test
+    public void testCancelOrder_OK() throws Exception{
+        init();
+        Assert.assertTrue(mobileBooking.cancelOrder("12"));
+    }
+
+    @Test
+    public void testGetOrderState_OK() throws Exception{
+        init();
+        Assert.assertTrue(mobileBooking.getOrderState("12"));
+    }
+
+    @Test
     public void testCheckOrder_Unauthorized() throws Exception{
         initUnauthorized();
         Assert.assertFalse(mobileBooking.checkOrder(

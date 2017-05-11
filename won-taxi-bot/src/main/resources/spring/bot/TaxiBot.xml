@@ -36,14 +36,12 @@
                 <property name="fixedRate" value="false" />  <!-- fixed delay after completion -->
             </bean>
         </property>
-        <property name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
-    <bean id="botContextWrapper" class="won.bot.framework.bot.context.FactoryBotContextWrapper">
+    <bean id="botContextWrapper" class="won.transport.taxi.bot.impl.TaxiBotContextWrapper">
         <constructor-arg name="botContext" ref="${botContext.impl}"/>
-        <constructor-arg name="needCreateListName" value="taxiBotNeeds"/>
-        <constructor-arg name="factoryListName" value="taxiBotFactoryNeeds"/>
-        <constructor-arg name="factoryInternalIdName" value="taxiBotIdsToFactoryNeeds"/>
+        <constructor-arg name="botName" value="${taxibot.name}"/>
+        <constructor-arg name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
     <bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBooking">

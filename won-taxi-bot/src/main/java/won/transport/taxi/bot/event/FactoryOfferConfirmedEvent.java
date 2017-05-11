@@ -14,14 +14,17 @@
  *      limitations under the License.
  */
 
-package won.transport.taxi.bot.client.entity.Parameter;
+package won.transport.taxi.bot.event;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
-import java.io.Serializable;
+import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageReceivedOnConnectionEvent;
+import won.protocol.message.WonMessage;
+import won.protocol.model.Connection;
 
-@XmlRootElement(name="ORDERTYPE")
-public class OrderType extends Parameter implements Serializable {
-    @XmlValue
-    public String orderType="1";
+/**
+ * Created by fsuda on 04.05.2017.
+ */
+public class FactoryOfferConfirmedEvent extends WonMessageReceivedOnConnectionEvent {
+    public FactoryOfferConfirmedEvent(Connection con, WonMessage wonMessage) {
+        super(con, wonMessage);
+    }
 }

@@ -21,22 +21,25 @@ import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.impl.MultipleActions;
 import won.bot.framework.eventbot.action.impl.needlifecycle.DeactivateNeedAction;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectCommandAction;
+import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectionMessageCommandAction;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.command.connect.ConnectCommandEvent;
+import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.transport.taxi.bot.action.*;
-import won.transport.taxi.bot.client.MobileBooking;
+import won.transport.taxi.bot.event.FactoryOfferCancelEvent;
+import won.transport.taxi.bot.event.FactoryOfferConfirmedEvent;
+import won.transport.taxi.bot.event.FactoryOfferValidEvent;
 
 /**
  * Created by fsuda on 27.02.2017.
  */
 public class TaxiBot extends FactoryBot {
     private EventBus bus;
-    private MobileBooking mobileBooking;
 
     protected void initializeFactoryEventListeners() {
         EventListenerContext ctx = getEventListenerContext();
@@ -62,7 +65,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "MessageReceived",
-                null//TODO: ADD ACTION
+                new CheckMessageAction(ctx)
             )
         );
 
@@ -80,15 +83,42 @@ public class TaxiBot extends FactoryBot {
                     "FactoryOfferClosed",
                     new MultipleActions(
                         ctx,
-                        new DeactivateNeedAction(ctx)/*,
-                        //TODO CALL ACTION TO CANCEL ORDER*/
+                        new DeactivateNeedAction(ctx),
+                        new CancelTaxiOrderAction(ctx)
                     )
             )
         );
-    }
 
-    // ******* SETTER**********
-    public void setMobileBooking(MobileBooking mobileBooking) {
-        this.mobileBooking = mobileBooking;
+        bus.subscribe(FactoryOfferCancelEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "FactoryOfferCanceled",
+                new CancelTaxiOrderAction(ctx)
+            )
+        );
+
+        bus.subscribe(FactoryOfferConfirmedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "FactoryOfferConfirmed",
+                new ExecuteTaxiOrderAction(ctx)
+            )
+        );
+
+        bus.subscribe(FactoryOfferValidEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "FactoryOfferValid",
+                new ConfirmTaxiOrderAction(ctx)
+            )
+        );
+
+        bus.subscribe(ConnectionMessageCommandEvent.class,
+            new ActionOnEventListener(
+                    ctx,
+                    "ConnectionMessageSend",
+                    new ExecuteConnectionMessageCommandAction(ctx, true)
+            )
+        );
     }
 }

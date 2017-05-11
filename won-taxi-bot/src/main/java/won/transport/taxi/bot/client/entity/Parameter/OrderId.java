@@ -20,8 +20,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import java.io.Serializable;
 
-@XmlRootElement(name="ORDERTYPE")
-public class OrderType extends Parameter implements Serializable {
+@XmlRootElement(name="ORDERID")
+public class OrderId extends Parameter implements Serializable {
+    private String orderId;
+
+    public OrderId() {}
+
+    public OrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
     @XmlValue
-    public String orderType="1";
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 }

@@ -19,7 +19,6 @@ package won.transport.taxi.bot.action;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
-import won.bot.framework.bot.context.FactoryBotContextWrapper;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.EventBotActionUtils;
 import won.bot.framework.eventbot.action.impl.needlifecycle.AbstractCreateNeedAction;
@@ -30,11 +29,12 @@ import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.FailureResponseEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.message.WonMessage;
-import won.protocol.model.BasicNeedType;
-import won.protocol.util.NeedModelBuilder;
+import won.protocol.model.NeedContentPropertyType;
+import won.protocol.model.NeedGraphType;
+import won.protocol.util.DefaultNeedModelWrapper;
 import won.protocol.util.RdfUtils;
 import won.protocol.util.WonRdfUtils;
-import won.transport.taxi.bot.client.MobileBooking;
+import won.protocol.vocabulary.WON;
 
 import java.net.URI;
 
@@ -43,8 +43,7 @@ import java.net.URI;
  */
 public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
     public CreateFactoryOfferAction(EventListenerContext eventListenerContext, URI... facets) {
-        super(eventListenerContext, false, true, facets);
-        this.uriListName = ((FactoryBotContextWrapper) eventListenerContext.getBotContextWrapper()).getFactoryListName();
+        super(eventListenerContext, (eventListenerContext.getBotContextWrapper()).getNeedCreateListName(), false, true, facets);
     }
 
     @Override
@@ -91,16 +90,24 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
     private Model createFactoryOfferFromTemplate(EventListenerContext ctx, URI factoryNeedURI, URI requesterURI){
         //TODO: retrieve real template from factory
         Dataset factoryNeedDataSet = ctx.getLinkedDataSource().getDataForResource(factoryNeedURI);
-        Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
-        String connectTitle =  WonRdfUtils.NeedUtils.getNeedTitle(requesterNeedDataSet) + "<->" + WonRdfUtils.NeedUtils.getNeedTitle(factoryNeedDataSet);
+        DefaultNeedModelWrapper factoryNeedModelWrapper = new DefaultNeedModelWrapper(factoryNeedDataSet);
 
-        Model factoryOfferModel = new NeedModelBuilder()
-                .setTitle(connectTitle)
-                .setBasicNeedType(BasicNeedType.SUPPLY)
-                .setDescription("This is a automatically created need by the TaxiBot")
-                .setUri(ctx.getWonNodeInformationService().generateNeedURI(ctx.getNodeURISource().getNodeURI()))
-                .setFacetTypes(facets)
-                .build();
+        Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
+        DefaultNeedModelWrapper requesterNeedModelWrapper = new DefaultNeedModelWrapper(requesterNeedDataSet);
+
+        String connectTitle =  factoryNeedModelWrapper.getTitleFromIsOrAll() + "<->" + requesterNeedModelWrapper.getTitleFromIsOrAll();
+
+        DefaultNeedModelWrapper needModelWrapper = new DefaultNeedModelWrapper(ctx.getWonNodeInformationService().generateNeedURI(ctx.getNodeURISource().getNodeURI()).toString());
+
+        needModelWrapper.setTitle(NeedContentPropertyType.IS, connectTitle);
+        needModelWrapper.setDescription(NeedContentPropertyType.IS, "This is a automatically created need by the TaxiBot");
+        needModelWrapper.addFlag(WON.NO_HINT_FOR_COUNTERPART);
+        needModelWrapper.addFlag(WON.NO_HINT_FOR_ME);
+
+        for(URI facet : facets){
+            needModelWrapper.addFacetUri(facet.toString());
+        }
+        Model factoryOfferModel = needModelWrapper.getNeedModel(NeedGraphType.NEED);
 
         return factoryOfferModel;
     }

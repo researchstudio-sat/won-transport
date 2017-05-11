@@ -1,6 +1,6 @@
 package won.transport.taxi.bot.client;
 
-import org.apache.http.HttpHost;
+import org.apache.http.*;
 import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -9,12 +9,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import won.transport.taxi.bot.client.entity.Function;
 import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
+import won.transport.taxi.bot.client.entity.Parameter.OrderId;
 import won.transport.taxi.bot.client.entity.Parameter.OrderType;
 import won.transport.taxi.bot.client.entity.Parameter.Parameter;
 
@@ -64,6 +67,72 @@ public class MobileBooking implements InitializingBean{
 
         Function checkOrder = new Function("CHECKORDER", parameterList);
         HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
+
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
+
+            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
+        }catch(ResourceAccessException e){
+            logger.error(e.getMessage());
+            return false;
+        }catch(Exception e){
+            //FOR SERVER ERROR MAYBE
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean createOrder(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+        List<Parameter> parameterList = new ArrayList<Parameter>();
+
+        parameterList.add(new OrderType());
+        parameterList.add(new DepartureAdress(x, y, state, postCode, city, streetName, streetNumber, text));
+
+
+        Function checkOrder = new Function("CREATEORDER", parameterList);
+        HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
+
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
+
+            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
+        }catch(ResourceAccessException e){
+            logger.error(e.getMessage());
+            return false;
+        }catch(Exception e){
+            //FOR SERVER ERROR MAYBE
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean cancelOrder(String orderId) {
+        List<Parameter> parameterList = new ArrayList<>();
+        parameterList.add(new OrderId(orderId));
+
+        Function cancelOrder = new Function("CANCELORDER", parameterList);
+        HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
+
+        try{
+            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
+
+            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
+        }catch(ResourceAccessException e){
+            logger.error(e.getMessage());
+            return false;
+        }catch(Exception e){
+            //FOR SERVER ERROR MAYBE
+            logger.error(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean getOrderState(String orderId) {
+        List<Parameter> parameterList = new ArrayList<>();
+        parameterList.add(new OrderId(orderId));
+
+        Function cancelOrder = new Function("GETORDERSTATE", parameterList);
+        HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
 
         try{
             ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);

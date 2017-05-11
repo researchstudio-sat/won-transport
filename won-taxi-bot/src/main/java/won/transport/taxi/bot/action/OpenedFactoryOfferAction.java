@@ -23,6 +23,7 @@ import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.EventListener;
+import won.transport.taxi.bot.event.FactoryOfferValidEvent;
 
 import java.net.URI;
 
@@ -53,7 +54,9 @@ public class OpenedFactoryOfferAction extends BaseEventBotAction {
 
         Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
 
+        //TODO: GET WHAT INFO IS NEEDED FOR THE GIVEN FACTORY NEED
         //TODO: TRY TO EXTRACT INFORMATION THAT IS ALREADY PRESENT IN THE DATA (e.g. LatLng, StreetAdress, PLZ etc)
 
+        ctx.getEventBus().publish(new FactoryOfferValidEvent(((OpenFromOtherNeedEvent) event).getCon(), ((OpenFromOtherNeedEvent) event).getWonMessage())); //TODO: remove/replace not necessarily correct but we send the FactoryOfferValidEvent right now on each open
     }
 }

@@ -1,6 +1,7 @@
 package won.transport.taxi.bot.client.entity;
 
 import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
+import won.transport.taxi.bot.client.entity.Parameter.OrderId;
 import won.transport.taxi.bot.client.entity.Parameter.OrderType;
 import won.transport.taxi.bot.client.entity.Parameter.Parameter;
 
@@ -38,6 +39,7 @@ public class Function implements Serializable{
     @XmlElements({
             @XmlElement(name="ORDERTYPE", type=OrderType.class),
             @XmlElement(name="DEPARTUREADRESS", type=DepartureAdress.class),
+            @XmlElement(name="ORDERID", type=OrderId.class)
     })
     public List<Parameter> getParameter() {
         return parameter;
