@@ -16,10 +16,9 @@ import org.springframework.http.client.support.BasicAuthorizationInterceptor;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import won.transport.taxi.bot.client.entity.Function;
-import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
-import won.transport.taxi.bot.client.entity.Parameter.OrderId;
-import won.transport.taxi.bot.client.entity.Parameter.OrderType;
-import won.transport.taxi.bot.client.entity.Parameter.Parameter;
+import won.transport.taxi.bot.client.entity.Parameter.*;
+import won.transport.taxi.bot.client.entity.Parameter.Error;
+import won.transport.taxi.bot.client.entity.Result;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -41,111 +40,85 @@ public class MobileBooking implements InitializingBean{
     private RestTemplate restTemplate;
     private HttpHeaders defaultHeaders;
 
-    public boolean ping() {
+    public Result ping() {
         Function ping = new Function("PING");
         HttpEntity entity = new HttpEntity(ping, defaultHeaders);
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
 
-            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
-        }catch(ResourceAccessException e){
-            logger.error(e.getMessage());
-            return false;
-        }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            return false;
-        }
+        return postEntity(entity);
     }
 
-    public boolean checkOrder(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+    public Result checkOrder(DepartureAdress departureAdress) {
+        return checkOrder(departureAdress, null);
+    }
+
+
+    public Result checkOrder(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
         List<Parameter> parameterList = new ArrayList<Parameter>();
 
         parameterList.add(new OrderType());
-        parameterList.add(new DepartureAdress(x, y, state, postCode, city, streetName, streetNumber, text));
+        parameterList.add(departureAdress);
 
+        if(destinationAdress!= null){
+            parameterList.add(destinationAdress);
+        }
 
         Function checkOrder = new Function("CHECKORDER", parameterList);
         HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
 
-        try{
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
-
-            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
-        }catch(ResourceAccessException e){
-            logger.error(e.getMessage());
-            return false;
-        }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            return false;
-        }
+        return postEntity(entity);
     }
 
-    public boolean createOrder(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+    public Result getPrice(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
         List<Parameter> parameterList = new ArrayList<Parameter>();
 
         parameterList.add(new OrderType());
-        parameterList.add(new DepartureAdress(x, y, state, postCode, city, streetName, streetNumber, text));
+        parameterList.add(departureAdress);
+        parameterList.add(destinationAdress);
 
+        Function checkOrder = new Function("GETPRICE", parameterList);
+        HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
+
+        return postEntity(entity);
+    }
+
+    public Result createOrder(DepartureAdress departureAdress) {
+        return createOrder(departureAdress, null);
+    }
+
+    public Result createOrder(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
+        List<Parameter> parameterList = new ArrayList<Parameter>();
+
+        parameterList.add(new OrderType());
+        parameterList.add(departureAdress);
+
+        if(destinationAdress != null){
+            parameterList.add(destinationAdress);
+        }
 
         Function checkOrder = new Function("CREATEORDER", parameterList);
         HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
 
-        try{
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
-
-            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
-        }catch(ResourceAccessException e){
-            logger.error(e.getMessage());
-            return false;
-        }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            return false;
-        }
+        return postEntity(entity);
     }
 
-    public boolean cancelOrder(String orderId) {
+    public Result cancelOrder(String orderId) {
         List<Parameter> parameterList = new ArrayList<>();
         parameterList.add(new OrderId(orderId));
 
         Function cancelOrder = new Function("CANCELORDER", parameterList);
         HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
 
-        try{
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
-
-            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
-        }catch(ResourceAccessException e){
-            logger.error(e.getMessage());
-            return false;
-        }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            return false;
-        }
+        return postEntity(entity);
     }
 
-    public boolean getOrderState(String orderId) {
+    public Result getOrderState(String orderId) {
         List<Parameter> parameterList = new ArrayList<>();
         parameterList.add(new OrderId(orderId));
 
         Function cancelOrder = new Function("GETORDERSTATE", parameterList);
         HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
 
-        try{
-            ResponseEntity<String> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, String.class);
-
-            return HttpStatus.OK_200.getStatusCode() == response.getStatusCodeValue();
-        }catch(ResourceAccessException e){
-            logger.error(e.getMessage());
-            return false;
-        }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            return false;
-        }
+        return postEntity(entity);
     }
     /**
      * PURE HELPER METHOD TO VALIDATE ALL CERTIFICATES
@@ -171,6 +144,25 @@ public class MobileBooking implements InitializingBean{
             logger.error("KeyStoreException in creating http client instance", e);
         }
         return httpClient;
+    }
+
+    private Result postEntity(HttpEntity entity) {
+        try{
+            ResponseEntity<Result> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, Result.class);
+
+            return response.getBody();
+        }catch(ResourceAccessException e){
+            logger.error(e.getMessage());
+            Result result = new Result();
+            result.setError(new Error(e.getMessage()));
+            return result;
+        }catch(Exception e){
+            //FOR SERVER ERROR MAYBE
+            logger.error(e.getMessage());
+            Result result = new Result();
+            result.setError(new Error(e.getMessage()));
+            return result;
+        }
     }
 
     //******** SETTER ***************
