@@ -117,7 +117,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                     ctx,
                     "ConnectionMessageSend",
-                    new ExecuteConnectionMessageCommandAction(ctx, true)
+                    new ExecuteConnectionMessageCommandAction(ctx)
             )
         );
     }

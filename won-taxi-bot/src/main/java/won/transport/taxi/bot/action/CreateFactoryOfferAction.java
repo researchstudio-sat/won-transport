@@ -95,7 +95,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
         DefaultNeedModelWrapper requesterNeedModelWrapper = new DefaultNeedModelWrapper(requesterNeedDataSet);
 
-        String connectTitle =  factoryNeedModelWrapper.getTitleFromIsOrAll() + "<->" + requesterNeedModelWrapper.getTitleFromIsOrAll();
+        String connectTitle =  factoryNeedModelWrapper.getSomeTitleFromIsOrAll() + "<->" + requesterNeedModelWrapper.getSomeTitleFromIsOrAll();
 
         DefaultNeedModelWrapper needModelWrapper = new DefaultNeedModelWrapper(ctx.getWonNodeInformationService().generateNeedURI(ctx.getNodeURISource().getNodeURI()).toString());
 
