@@ -19,7 +19,7 @@ package won.transport.taxi.bot.impl;
 import won.bot.framework.bot.base.FactoryBot;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.impl.MultipleActions;
-import won.bot.framework.eventbot.action.impl.needlifecycle.DeactivateNeedAction;
+import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateNeedCommandAction;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectCommandAction;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectionMessageCommandAction;
 import won.bot.framework.eventbot.bus.EventBus;
@@ -83,7 +83,7 @@ public class TaxiBot extends FactoryBot {
                     "FactoryOfferClosed",
                     new MultipleActions(
                         ctx,
-                        new DeactivateNeedAction(ctx),
+                        new ExecuteDeactivateNeedCommandAction(ctx),
                         new CancelTaxiOrderAction(ctx)
                     )
             )
