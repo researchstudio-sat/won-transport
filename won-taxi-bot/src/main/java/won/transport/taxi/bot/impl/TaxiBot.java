@@ -20,11 +20,10 @@ import won.bot.framework.bot.base.FactoryBot;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.impl.MultipleActions;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateNeedCommandAction;
-import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectCommandAction;
-import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteConnectionMessageCommandAction;
+import won.bot.framework.eventbot.behaviour.BotBehaviour;
+import won.bot.framework.eventbot.behaviour.ConnectBehaviour;
+import won.bot.framework.eventbot.behaviour.ConnectionMessageBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
-import won.bot.framework.eventbot.event.impl.command.connect.ConnectCommandEvent;
-import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
@@ -45,19 +44,17 @@ public class TaxiBot extends FactoryBot {
         EventListenerContext ctx = getEventListenerContext();
         bus = getEventBus();
 
+        BotBehaviour connectBehaviour = new ConnectBehaviour(ctx, "ConnectingFactoryOffer");
+        connectBehaviour.activate();
+
+        BotBehaviour connectionMessageBehaviour = new ConnectionMessageBehaviour(ctx);
+        connectionMessageBehaviour.activate();
+
         bus.subscribe(FactoryHintEvent.class,
             new ActionOnEventListener(
                 ctx,
                 "FactoryHintEvent",
                 new CreateFactoryOfferAction(ctx)
-            )
-        );
-
-        bus.subscribe(ConnectCommandEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "FactoryOfferCreatedEvent",
-                new ExecuteConnectCommandAction(ctx)
             )
         );
 
@@ -80,12 +77,12 @@ public class TaxiBot extends FactoryBot {
         bus.subscribe(CloseFromOtherNeedEvent.class,
             new ActionOnEventListener(
                 ctx,
-                    "FactoryOfferClosed",
-                    new MultipleActions(
-                        ctx,
-                        new ExecuteDeactivateNeedCommandAction(ctx),
-                        new CancelTaxiOrderAction(ctx)
-                    )
+                "FactoryOfferClosed",
+                new MultipleActions(
+                    ctx,
+                    new ExecuteDeactivateNeedCommandAction(ctx),
+                    new CancelTaxiOrderAction(ctx)
+                )
             )
         );
 
@@ -110,14 +107,6 @@ public class TaxiBot extends FactoryBot {
                 ctx,
                 "FactoryOfferValid",
                 new ConfirmTaxiOrderAction(ctx)
-            )
-        );
-
-        bus.subscribe(ConnectionMessageCommandEvent.class,
-            new ActionOnEventListener(
-                    ctx,
-                    "ConnectionMessageSend",
-                    new ExecuteConnectionMessageCommandAction(ctx)
             )
         );
     }
