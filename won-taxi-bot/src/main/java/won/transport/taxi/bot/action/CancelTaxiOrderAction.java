@@ -18,12 +18,12 @@ package won.transport.taxi.bot.action;
 
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
+import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
+import won.bot.framework.eventbot.event.impl.analyzation.ProposalCanceledEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.WonMessageReceivedOnConnectionEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
-import won.transport.taxi.bot.event.FactoryOfferCancelEvent;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 
 import java.net.URI;
@@ -38,10 +38,10 @@ public class CancelTaxiOrderAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof FactoryOfferCancelEvent || event instanceof CloseFromOtherNeedEvent)) {
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof ProposalCanceledEvent || event instanceof CloseFromOtherNeedEvent)) {
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            Connection con = ((WonMessageReceivedOnConnectionEvent) event).getCon();
+            Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
             URI offerURI = con.getNeedURI();

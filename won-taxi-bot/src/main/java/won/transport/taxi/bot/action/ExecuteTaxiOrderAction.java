@@ -20,12 +20,11 @@ import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
+import won.bot.framework.eventbot.event.impl.analyzation.ProposalAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
-import won.transport.taxi.bot.event.FactoryOfferConfirmedEvent;
-import won.transport.taxi.bot.event.FactoryOfferValidEvent;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 
 /**
@@ -40,9 +39,9 @@ public class ExecuteTaxiOrderAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof FactoryOfferConfirmedEvent) {
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof ProposalAcceptedEvent) {
             //TODO: CONFIRM TAXI ORDER WITH MOBILEBOOKING INTERFACE SEND CONFIRM MESSAGE
-            Connection con = ((FactoryOfferConfirmedEvent) event).getCon();
+            Connection con = ((ProposalAcceptedEvent) event).getCon();
             Model messageModel = WonRdfUtils.MessageUtils.textMessage("TAXI ORDER CONFIRMED IT WILL ARRIVE AT SOME TIME"); //TODO: Change Message
 
             getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
