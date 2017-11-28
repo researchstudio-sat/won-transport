@@ -20,19 +20,14 @@ import won.bot.framework.bot.base.FactoryBot;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.impl.MultipleActions;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateNeedCommandAction;
-import won.bot.framework.eventbot.behaviour.BotBehaviour;
-import won.bot.framework.eventbot.behaviour.ConnectBehaviour;
-import won.bot.framework.eventbot.behaviour.ConnectionMessageBehaviour;
+import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
+
 import won.bot.framework.eventbot.bus.EventBus;
+import won.bot.framework.eventbot.event.impl.analyzation.*;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.OpenFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.transport.taxi.bot.action.*;
-import won.transport.taxi.bot.event.FactoryOfferCancelEvent;
-import won.transport.taxi.bot.event.FactoryOfferConfirmedEvent;
-import won.transport.taxi.bot.event.FactoryOfferValidEvent;
 
 /**
  * Created by fsuda on 27.02.2017.
@@ -41,36 +36,67 @@ public class TaxiBot extends FactoryBot {
     private EventBus bus;
 
     protected void initializeFactoryEventListeners() {
-        EventListenerContext ctx = getEventListenerContext();
         bus = getEventBus();
+        EventListenerContext ctx = getEventListenerContext();
 
-        BotBehaviour connectBehaviour = new ConnectBehaviour(ctx, "ConnectingFactoryOffer");
-        connectBehaviour.activate();
+        AnalyzeBehaviour analyzeBehaviour = new AnalyzeBehaviour(ctx);
+        analyzeBehaviour.activate();
 
-        BotBehaviour connectionMessageBehaviour = new ConnectionMessageBehaviour(ctx);
-        connectionMessageBehaviour.activate();
+        //Analyzation Events
+        bus.subscribe(GoalSatisfiedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "GoalSatisfiedEvent",
+                new ConfirmTaxiOrderAction(ctx)
+            )
+        );
 
+        /*bus.subscribe(GoalUnsatisfiedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "GoalUnsatisfiedEvent",
+                null
+            )
+        );*/
+
+        bus.subscribe(ProposalAcceptedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "ProposalAcceptedEvent",
+                new ExecuteTaxiOrderAction(ctx)
+            )
+        );
+
+        bus.subscribe(ProposalCanceledEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "ProposalCanceledEvent",
+                new CancelTaxiOrderAction(ctx)
+            )
+        );
+
+        /*bus.subscribe(ProposalErrorEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "ProposalErrorEvent",
+                null
+            )
+        );
+
+        bus.subscribe(PassThroughEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "PassThroughEvent",
+                null
+            )
+        );*/
+
+        //Other Events
         bus.subscribe(FactoryHintEvent.class,
             new ActionOnEventListener(
                 ctx,
                 "FactoryHintEvent",
                 new CreateFactoryOfferAction(ctx)
-            )
-        );
-
-        bus.subscribe(MessageFromOtherNeedEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "MessageReceived",
-                new CheckMessageAction(ctx)
-            )
-        );
-
-        bus.subscribe(OpenFromOtherNeedEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "FactoryOfferOpened",
-                new OpenedFactoryOfferAction(ctx)
             )
         );
 
@@ -83,30 +109,6 @@ public class TaxiBot extends FactoryBot {
                     new ExecuteDeactivateNeedCommandAction(ctx),
                     new CancelTaxiOrderAction(ctx)
                 )
-            )
-        );
-
-        bus.subscribe(FactoryOfferCancelEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "FactoryOfferCanceled",
-                new CancelTaxiOrderAction(ctx)
-            )
-        );
-
-        bus.subscribe(FactoryOfferConfirmedEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "FactoryOfferConfirmed",
-                new ExecuteTaxiOrderAction(ctx)
-            )
-        );
-
-        bus.subscribe(FactoryOfferValidEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "FactoryOfferValid",
-                new ConfirmTaxiOrderAction(ctx)
             )
         );
     }
