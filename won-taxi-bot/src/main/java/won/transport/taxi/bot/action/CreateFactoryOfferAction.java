@@ -107,8 +107,6 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         for(URI facet : facets){
             needModelWrapper.addFacetUri(facet.toString());
         }
-        Model factoryOfferModel = needModelWrapper.getNeedModel(NeedGraphType.NEED);
-
-        return factoryOfferModel;
+        return needModelWrapper.getNeedModel(NeedGraphType.NEED);
     }
 }
