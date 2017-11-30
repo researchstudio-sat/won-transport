@@ -37,7 +37,8 @@ public class Function implements Serializable{
             @XmlElement(name="ORDERTYPE", type=OrderType.class),
             @XmlElement(name="DEPARTUREADRESS", type=DepartureAdress.class),
             @XmlElement(name="DESTINATIONADRESS", type=DestinationAdress.class),
-            @XmlElement(name="ORDERID", type=OrderId.class)
+            @XmlElement(name="ORDERID", type=OrderId.class),
+            @XmlElement(name="TEST", type=Test.class)
     })
     public List<Parameter> getParameter() {
         return parameter;
