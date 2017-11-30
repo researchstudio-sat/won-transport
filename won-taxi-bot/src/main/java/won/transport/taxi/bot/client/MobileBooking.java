@@ -88,14 +88,15 @@ public class MobileBooking implements InitializingBean{
         List<Parameter> parameterList = new ArrayList<Parameter>();
 
         parameterList.add(new OrderType());
+        parameterList.add(new Test()); //TODO: REMOVE FLAG TO BE SET FOR TEST TAXI ORDERS
         parameterList.add(departureAdress);
 
         if(destinationAdress != null){
             parameterList.add(destinationAdress);
         }
 
-        Function checkOrder = new Function("CREATEORDER", parameterList);
-        HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
+        Function createOrder = new Function("CREATEORDER", parameterList);
+        HttpEntity entity = new HttpEntity(createOrder, defaultHeaders);
 
         return postEntity(entity);
     }
