@@ -47,10 +47,12 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "GoalSatisfiedEvent",
-                new ConfirmTaxiOrderAction(ctx)
+                new TaxiOfferProposalAction(ctx)
             )
         );
 
+
+        //GoalUnsatisfiedEvent is the superclass of GoalShapeMissingEvent and GoalShapeAmbivalentEvent
         /*bus.subscribe(GoalUnsatisfiedEvent.class,
             new ActionOnEventListener(
                 ctx,
@@ -67,6 +69,7 @@ public class TaxiBot extends FactoryBot {
             )
         );
 
+        //TODO: not sure if necessary, depending on what ProposalCanceledEvent is (either cancel a proposal before accepting, or cancel a proposal that was already accepted....)
         bus.subscribe(ProposalCanceledEvent.class,
             new ActionOnEventListener(
                 ctx,
