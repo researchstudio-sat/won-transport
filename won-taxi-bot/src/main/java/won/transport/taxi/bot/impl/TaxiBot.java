@@ -23,11 +23,16 @@ import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeac
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 
 import won.bot.framework.eventbot.bus.EventBus;
-import won.bot.framework.eventbot.event.impl.analyzation.*;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcceptedEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.transport.taxi.bot.action.*;
+import won.transport.taxi.bot.action.agreement.AgreementAcceptedAction;
+import won.transport.taxi.bot.action.agreement.AgreementCanceledAction;
+import won.transport.taxi.bot.action.agreement.ProposeAgreementAction;
 
 /**
  * Created by fsuda on 27.02.2017.
@@ -43,53 +48,44 @@ public class TaxiBot extends FactoryBot {
         analyzeBehaviour.activate();
 
         //Analyzation Events
-        bus.subscribe(GoalSatisfiedEvent.class,
+        bus.subscribe(PreconditionMetEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "GoalSatisfiedEvent",
-                new TaxiOfferProposalAction(ctx)
+                "PreconditionMetEvent",
+                new ProposeAgreementAction(ctx)
             )
         );
 
 
-        //GoalUnsatisfiedEvent is the superclass of GoalShapeMissingEvent and GoalShapeAmbivalentEvent
-        /*bus.subscribe(GoalUnsatisfiedEvent.class,
+        /*bus.subscribe(PreconditionUnmetEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "GoalUnsatisfiedEvent",
+                "PreconditionUnmetEvent",
                 null
             )
         );*/
 
-        bus.subscribe(ProposalAcceptedEvent.class,
+        bus.subscribe(AgreementAcceptedEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "ProposalAcceptedEvent",
-                new ExecuteTaxiOrderAction(ctx)
+                "AgreementAcceptedEvent",
+                new AgreementAcceptedAction(ctx)
             )
         );
 
         //TODO: not sure if necessary, depending on what ProposalCanceledEvent is (either cancel a proposal before accepting, or cancel a proposal that was already accepted....)
-        bus.subscribe(ProposalCanceledEvent.class,
+        bus.subscribe(AgreementCanceledEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "ProposalCanceledEvent",
-                new CancelTaxiOrderAction(ctx)
+                "AgreementCanceledEvent",
+                new AgreementCanceledAction(ctx)
             )
         );
 
-        /*bus.subscribe(ProposalErrorEvent.class,
+        /*bus.subscribe(AgreementErrorEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "ProposalErrorEvent",
-                null
-            )
-        );
-
-        bus.subscribe(PassThroughEvent.class,
-            new ActionOnEventListener(
-                ctx,
-                "PassThroughEvent",
+                "AgreementErrorEvent",
                 null
             )
         );*/
@@ -110,7 +106,7 @@ public class TaxiBot extends FactoryBot {
                 new MultipleActions(
                     ctx,
                     new ExecuteDeactivateNeedCommandAction(ctx),
-                    new CancelTaxiOrderAction(ctx)
+                    new AgreementCanceledAction(ctx)
                 )
             )
         );

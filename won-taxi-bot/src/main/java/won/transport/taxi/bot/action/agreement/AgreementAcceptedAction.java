@@ -14,13 +14,13 @@
  *      limitations under the License.
  */
 
-package won.transport.taxi.bot.action;
+package won.transport.taxi.bot.action.agreement;
 
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
-import won.bot.framework.eventbot.event.impl.analyzation.ProposalAcceptedEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
@@ -34,8 +34,8 @@ import won.transport.taxi.bot.service.InformationExtractor;
 /**
  * Created by fsuda on 08.05.2017.
  */
-public class ExecuteTaxiOrderAction extends BaseEventBotAction {
-    public ExecuteTaxiOrderAction(EventListenerContext eventListenerContext) {
+public class AgreementAcceptedAction extends BaseEventBotAction {
+    public AgreementAcceptedAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
     }
 
@@ -43,29 +43,33 @@ public class ExecuteTaxiOrderAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof ProposalAcceptedEvent) {
-            Connection con = ((ProposalAcceptedEvent) event).getCon();
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof AgreementAcceptedEvent) {
+            Connection con = ((AgreementAcceptedEvent) event).getCon();
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((ProposalAcceptedEvent) event).getPayload());
-            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((ProposalAcceptedEvent) event).getPayload());
+            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((AgreementAcceptedEvent) event).getPayload());
+            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((AgreementAcceptedEvent) event).getPayload());
 
             Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAdress, destinationAdress);
-            //TODO: SAFE ORDER NUMBER WITH CONNECTION URI FOR LATER USE (e.g. checkups and cancelations or stuff)
+            //TODO: SAFE ORDER NUMBER WITH CONNECTION URI FOR LATER USE (e.g. checkups and cancelations or stuff) -> taxiBotContextWrapper.addOfferIdForAgreementURI(...
             //TODO: FIGURE OUT HOW TO HANDLE MULTIPLE ORDERS (BLOCK IF ORDER ALREADY EXISTS)
 
             String respondWith = "";
+            String orderId = "";
+            boolean errorPresent = false;
 
             if(createOrderResponse.getError() != null) {
                 //TODO: ERROR CASES
                 Error error = createOrderResponse.getError();
                 respondWith = "ErrorID:"+ error.getErrorId() + " Text: "+ error.getText();
+                errorPresent = true;
             }else {
                 respondWith = "Ride from " + departureAdress + " to " + destinationAdress + ": ";
                 for (Parameter param : createOrderResponse.getParameter()) {
                     if (param instanceof OrderId) {
-                        respondWith = respondWith + "Your OrderId is: " + ((OrderId) param).getOrderId() + ";";
+                        orderId = ((OrderId) param).getOrderId();
+                        respondWith = respondWith + "Your OrderId is: " + orderId + ";";
                     } else if (param instanceof DisplayText) {
                         respondWith = respondWith + ((DisplayText) param).getText();
                     } else if (param instanceof Price) {
@@ -73,6 +77,9 @@ public class ExecuteTaxiOrderAction extends BaseEventBotAction {
                     }
                 }
                 respondWith += "....Get into the Taxi when it arrives!";
+
+                taxiBotContextWrapper.addOfferIdForAgreementURI(InformationExtractor.getAgreementURI(con), orderId); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL OFFER ID
+                errorPresent = false;
             }
 
             Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);

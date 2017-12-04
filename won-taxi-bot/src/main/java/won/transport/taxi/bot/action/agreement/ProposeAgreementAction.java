@@ -14,15 +14,14 @@
  *      limitations under the License.
  */
 
-package won.transport.taxi.bot.action;
+package won.transport.taxi.bot.action.agreement;
 
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
-import won.bot.framework.eventbot.event.impl.analyzation.GoalSatisfiedEvent;
-import won.bot.framework.eventbot.event.impl.analyzation.ProposalAcceptedEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
@@ -32,9 +31,12 @@ import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 
-public class TaxiOfferProposalAction extends BaseEventBotAction{
+/**
+ * Proposes an agreement based on the Data/Payload given within the PreconditionMetEvent
+ */
+public class ProposeAgreementAction extends BaseEventBotAction{
 
-    public TaxiOfferProposalAction(EventListenerContext eventListenerContext) {
+    public ProposeAgreementAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
     }
 
@@ -42,13 +44,13 @@ public class TaxiOfferProposalAction extends BaseEventBotAction{
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof GoalSatisfiedEvent) {
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof PreconditionMetEvent) {
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((GoalSatisfiedEvent) event).getPayload());
-            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((GoalSatisfiedEvent) event).getPayload());
+            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((PreconditionMetEvent) event).getPayload());
+            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((PreconditionMetEvent) event).getPayload());
 
             Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAdress, destinationAdress);
 
@@ -62,7 +64,7 @@ public class TaxiOfferProposalAction extends BaseEventBotAction{
                 }
             }
 
-            Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith + "....Do you want to confirm the taxi order? type 'ProposalAcceptedEvent'");
+            Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith + "....Do you want to confirm the taxi order? type 'AgreementAcceptedEvent'");
             //TODO: Create Real Proposal and send it over the EventBus (probably via ConnectionMessageCommandEvent)
             //TODO: ERROR CASES
             getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));

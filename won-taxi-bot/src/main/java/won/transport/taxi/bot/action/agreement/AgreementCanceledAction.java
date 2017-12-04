@@ -14,23 +14,25 @@
  *      limitations under the License.
  */
 
-package won.transport.taxi.bot.action;
+package won.transport.taxi.bot.action.agreement;
 
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
-import won.bot.framework.eventbot.event.impl.analyzation.ProposalCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
+import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
+import won.transport.taxi.bot.service.InformationExtractor;
 
 import java.net.URI;
 
-public class CancelTaxiOrderAction extends BaseEventBotAction {
+public class AgreementCanceledAction extends BaseEventBotAction {
 
-    public CancelTaxiOrderAction(EventListenerContext eventListenerContext) {
+    public AgreementCanceledAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
     }
 
@@ -38,20 +40,22 @@ public class CancelTaxiOrderAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof ProposalCanceledEvent || event instanceof CloseFromOtherNeedEvent)) {
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof AgreementCanceledEvent || event instanceof CloseFromOtherNeedEvent)) {
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
-            URI offerURI = con.getNeedURI();
-            String offerId = taxiBotContextWrapper.getOfferIdForOfferURI(con.getNeedURI());
+            URI agreementURI = InformationExtractor.getAgreementURI(con); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL AgreementURI ID
+            String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
 
             if(offerId != null){
-                logger.debug("Trying to cancel with the offerId: "+offerId+" fo offerURI: "+offerURI);
-                taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId);
+                logger.debug("Trying to cancel with the offerId: "+offerId+" fo agreementURI: "+agreementURI);
+                Result cancelOrderResult = taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId);
+                //TODO: IMPL RESPONSE AND ERROR CASES
+                taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
             }else{
-                logger.debug("No Offer present for offerUri:"+offerURI+", no need to cancel anything");
+                logger.debug("No Offer present for agreementURI:"+agreementURI+", no need to cancel anything");
             }
         }
     }
