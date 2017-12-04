@@ -44,7 +44,8 @@ public class Result implements Serializable{
             @XmlElement(name="SERVICEPHONE", type=ServicePhone.class),
             @XmlElement(name="ARRIVALMINUTES", type=ArrivalMinutes.class),
             @XmlElement(name="DISPLAYTEXT", type=DisplayText.class),
-            @XmlElement(name="PRICE", type=Price.class)
+            @XmlElement(name="PRICE", type=Price.class),
+            @XmlElement(name="VEHICLE", type=Vehicle.class)
     })
     public List<Parameter> getParameter() {
         return parameter;
