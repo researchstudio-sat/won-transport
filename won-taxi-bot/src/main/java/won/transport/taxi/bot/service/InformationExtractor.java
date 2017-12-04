@@ -1,5 +1,6 @@
 package won.transport.taxi.bot.service;
 
+import won.protocol.model.Connection;
 import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
 import won.transport.taxi.bot.client.entity.Parameter.DestinationAdress;
 
@@ -33,5 +34,10 @@ public class InformationExtractor {
                 "Karlsstraße",
                 "346",
                 "");
+    }
+
+    public static URI getAgreementURI(Object payload){
+        //TODO: REIMPL THIS CURRENTLY WE EXPECT A CONNECTION
+        return ((Connection)payload).getConnectionURI();
     }
 }
