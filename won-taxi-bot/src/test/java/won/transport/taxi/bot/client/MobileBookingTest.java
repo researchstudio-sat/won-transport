@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
 import won.transport.taxi.bot.client.entity.Parameter.DestinationAdress;
+import won.transport.taxi.bot.client.entity.Parameter.OrderId;
+import won.transport.taxi.bot.client.entity.Parameter.Parameter;
 import won.transport.taxi.bot.client.entity.Result;
 
 public class MobileBookingTest {
@@ -71,22 +73,22 @@ public class MobileBookingTest {
     public void testCreateOrder_OK() throws Exception {
         init();
         DepartureAdress departureAdress = new DepartureAdress(
-                0.0,
-                0.0,
-                "A",
-                "1060",
-                "Wien",
-                "Webgasse",
-                "8",
+                11.5599861703,
+                48.1448925705,
+                "D",
+                "80333",
+                "München",
+                "Karlsstraße",
+                "345",
                 "");
         DestinationAdress destinationAdress = new DestinationAdress(
-                0.0,
-                0.0,
-                "A",
-                "1060",
-                "Wien",
-                "Webgasse",
-                "3",
+                11.5599861703,
+                48.1448925705,
+                "D",
+                "80333",
+                "München",
+                "Karlsstraße",
+                "346",
                 "");
 
         Result result = mobileBooking.createOrder(departureAdress);
@@ -96,13 +98,47 @@ public class MobileBookingTest {
     @Test
     public void testCancelOrder_OK() throws Exception{
         init();
-        Assert.assertTrue(mobileBooking.cancelOrder("12").getError() == null);
+        DepartureAdress departureAdress = new DepartureAdress(
+                11.5599861703,
+                48.1448925705,
+                "D",
+                "80333",
+                "München",
+                "Karlsstraße",
+                "345",
+                "");
+
+        Result createResult = mobileBooking.createOrder(departureAdress);
+
+        for(Parameter param : createResult.getParameter()){
+            if(param instanceof OrderId){
+                Result cancelationResult = mobileBooking.cancelOrder(((OrderId) param).getOrderId());
+                Assert.assertTrue(cancelationResult.getError() == null);
+            }
+        }
     }
 
     @Test
     public void testGetOrderState_OK() throws Exception{
         init();
-        Assert.assertTrue(mobileBooking.getOrderState("12").getError() == null);
+        DepartureAdress departureAdress = new DepartureAdress(
+                11.5599861703,
+                48.1448925705,
+                "D",
+                "80333",
+                "München",
+                "Karlsstraße",
+                "345",
+                "");
+
+        Result createResult = mobileBooking.createOrder(departureAdress);
+
+        for(Parameter param : createResult.getParameter()){
+            if(param instanceof OrderId){
+                Result orderStateResult = mobileBooking.getOrderState(((OrderId) param).getOrderId());
+                Assert.assertTrue(orderStateResult.getError() == null);
+            }
+        }
     }
 
     @Test
