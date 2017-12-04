@@ -27,7 +27,7 @@ import java.net.URI;
  */
 public class TaxiBotContextWrapper extends FactoryBotContextWrapper {
     private MobileBooking mobileBooking;
-    private String offerUriOfferIdMapName = getBotName() + ":offerUriOfferIdMap";
+    private String agreementUriOfferIdMapName = getBotName() + ":agreementUriOfferIdMap";
 
     public TaxiBotContextWrapper(BotContext botContext, MobileBooking mobileBooking, String botName) {
         super(botContext, botName);
@@ -38,11 +38,15 @@ public class TaxiBotContextWrapper extends FactoryBotContextWrapper {
         return mobileBooking;
     }
 
-    public String getOfferIdForOfferURI(URI offerURI) {
-        return (String) this.getBotContext().loadFromObjectMap(offerUriOfferIdMapName, offerURI.toString());
+    public String getOfferIdForAgreementURI(URI agreementURI) {
+        return (String) this.getBotContext().loadFromObjectMap(agreementUriOfferIdMapName, agreementURI.toString());
     }
 
-    public void addOfferIdForOfferURI(URI offerURI, String offerId) {
-        this.getBotContext().saveToObjectMap(offerUriOfferIdMapName, offerURI.toString(), offerId);
+    public void addOfferIdForAgreementURI(URI agreementURI, String offerId) {
+        this.getBotContext().saveToObjectMap(agreementUriOfferIdMapName, agreementURI.toString(), offerId);
+    }
+
+    public void removeOfferIdForAgreementURI(URI agreementURI) {
+        this.getBotContext().removeFromObjectMap(agreementUriOfferIdMapName, agreementURI.toString());
     }
 }
