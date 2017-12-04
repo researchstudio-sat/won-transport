@@ -69,7 +69,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         EventListener successCallback = successEvent -> {
             logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
             //publish connect between the specific offer and the requester need
-            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), "Type 'GoalSatisfiedEvent'")); //TODO: REMOVE THIS MESSAGE
+            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), "Type 'PreconditionMetEvent'")); //TODO: REMOVE THE MESSAGE STRING -> will not be used once the analyzeAction is implemented
         };
 
         EventListener failureCallback = failureEvent -> {
