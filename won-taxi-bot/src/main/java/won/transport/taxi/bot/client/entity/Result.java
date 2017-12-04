@@ -39,6 +39,7 @@ public class Result implements Serializable{
     @XmlElements({
             @XmlElement(name="SERVICEID", type=ServiceId.class),
             @XmlElement(name="ORDERID", type=OrderId.class),
+            @XmlElement(name="ORDERSTATE", type=OrderState.class),
             @XmlElement(name="SERVICENAME", type=ServiceName.class),
             @XmlElement(name="SERVICEPHONE", type=ServicePhone.class),
             @XmlElement(name="ARRIVALMINUTES", type=ArrivalMinutes.class),
