@@ -58,7 +58,7 @@ public class ProposeAgreementAction extends BaseEventBotAction{
 
             for(Parameter param : checkOrderResponse.getParameter()){
                 if(param instanceof DisplayText){
-                    respondWith = respondWith + ((DisplayText) param).getText();
+                    respondWith = respondWith + ((DisplayText) param).getValue();
                 }else if(param instanceof Price){
                     respondWith = respondWith + " for a price of:"+((Price) param).getAmount()+" "+((Price) param).getCurrency();
                 }

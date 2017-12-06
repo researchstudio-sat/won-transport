@@ -22,21 +22,21 @@ import java.io.Serializable;
 
 @XmlRootElement(name="DISPLAYTEXT")
 public class DisplayText extends Parameter implements Serializable {
-    private String text;
+    private String value;
 
     public DisplayText() {
     }
 
-    public DisplayText(String text) {
-        this.text = text;
+    public DisplayText(String value) {
+        this.value = value;
     }
 
     @XmlValue
-    public String getText() {
-        return text;
+    public String getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

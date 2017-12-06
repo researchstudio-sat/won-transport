@@ -276,7 +276,7 @@ LogiTrans:Contact_CompanyA
   LogiCO:hasFaxNr "0031384567222"^^xsd:string ;
   LogiCO:hasName "Algemeen"^^xsd:string ;
   LogiCO:hasPhoneNr "0031384567222"^^xsd:string ;
-  LogiTrans:hasNote "A free text note"^^xsd:string ;
+  LogiTrans:hasNote "A free value note"^^xsd:string ;
   LogiTrans:hasOtherCommunication "Twitter @ACompany"^^xsd:string ;
   rdfs:label "Contact Company a"^^xsd:string ;
 .
@@ -293,7 +293,7 @@ LogiTrans:Contact_CompanyX
   LogiCO:hasFaxNr "0031884567200"^^xsd:string ;
   LogiCO:hasName "Algemeen"^^xsd:string ;
   LogiCO:hasPhoneNr "0031884567111"^^xsd:string ;
-  LogiTrans:hasNote "A free text note"^^xsd:string ;
+  LogiTrans:hasNote "A free value note"^^xsd:string ;
   LogiTrans:hasOtherCommunication "Twitter @Xnews"^^xsd:string ;
   rdfs:label "Contact company x"^^xsd:string ;
 .
@@ -641,7 +641,7 @@ LogiTrans:PlannedPickupPeriod
 .
 LogiTrans:PlannedPickupTransportEvent
   rdf:type LogiTrans:TransportEvent ;
-  LogiCO:hasDescription "text descrbing this location"^^xsd:string ;
+  LogiCO:hasDescription "value descrbing this location"^^xsd:string ;
   LogiCO:hasLocation LogiTrans:PlannedPickupLocation ;
   LogiServ:hasStatus "Planned"^^xsd:string ;
   LogiServ:hasTime LogiTrans:PlannedPickupPeriod ;

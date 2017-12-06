@@ -71,7 +71,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
                         orderId = ((OrderId) param).getOrderId();
                         respondWith = respondWith + "Your OrderId is: " + orderId + ";";
                     } else if (param instanceof DisplayText) {
-                        respondWith = respondWith + ((DisplayText) param).getText();
+                        respondWith = respondWith + ((DisplayText) param).getValue();
                     } else if (param instanceof Price) {
                         respondWith = respondWith + " for a price of:" + ((Price) param).getAmount() + " " + ((Price) param).getCurrency();
                     }
