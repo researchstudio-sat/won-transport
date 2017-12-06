@@ -24,7 +24,7 @@ import java.io.Serializable;
 public class Price extends Parameter implements Serializable {
     private double amount;
     private String currency;
-    private String type;
+    private int type; //1=Festpreis 2=Geschätzter Preis, 3=Mindestpreis/Grundpreis
     private String displayText;
 
     public Price() {
@@ -50,11 +50,11 @@ public class Price extends Parameter implements Serializable {
     }
 
     @XmlAttribute(name="TYPE")
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 
