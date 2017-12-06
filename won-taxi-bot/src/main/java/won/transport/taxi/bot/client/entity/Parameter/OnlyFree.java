@@ -22,21 +22,21 @@ import java.io.Serializable;
 
 @XmlRootElement(name="ONLY_FREE")
 public class OnlyFree extends Parameter implements Serializable {
-    private Boolean value;
+    private boolean value;
 
     public OnlyFree() {
     }
 
-    public OnlyFree(Boolean value) {
+    public OnlyFree(boolean value) {
         this.value = value;
     }
 
     @XmlValue
-    public Boolean isValue() {
+    public boolean isValue() {
         return value;
     }
 
-    public void setValue(Boolean value) {
+    public void setValue(boolean value) {
         this.value = value;
     }
 }
