@@ -10,5 +10,5 @@ import java.io.Serializable;
 @XmlRootElement(name="TEST")
 public class Test extends Parameter implements Serializable {
     @XmlValue
-    public String testFlag="1";
+    public int value=1;
 }

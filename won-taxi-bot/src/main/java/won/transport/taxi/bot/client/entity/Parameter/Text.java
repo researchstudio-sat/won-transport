@@ -23,20 +23,20 @@ import java.io.Serializable;
 @XmlRootElement(name="TEXT")
 public class Text extends Parameter implements Serializable {
     @XmlValue
-    public String text;
+    public String value;
 
     public Text() {
     }
 
-    public Text(String text) {
-        this.text = text;
+    public Text(String value) {
+        this.value = value;
     }
 
-    public String getText() {
-        return text;
+    public String getValue() {
+        return value;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setValue(String value) {
+        this.value = value;
     }
 }
