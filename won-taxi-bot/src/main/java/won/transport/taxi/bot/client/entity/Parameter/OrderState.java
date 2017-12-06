@@ -22,21 +22,21 @@ import java.io.Serializable;
 
 @XmlRootElement(name="ORDERSTATE")
 public class OrderState extends Parameter implements Serializable {
-    private int state;
+    private int value;
 
     public OrderState() {
     }
 
     public OrderState(int state) {
-        this.state = state;
+        this.value = state;
     }
 
     @XmlValue
-    public int getState() {
-        return state;
+    public int getValue() {
+        return value;
     }
 
-    public void setState(int state) {
-        this.state = state;
+    public void setValue(int value) {
+        this.value = value;
     }
 }
