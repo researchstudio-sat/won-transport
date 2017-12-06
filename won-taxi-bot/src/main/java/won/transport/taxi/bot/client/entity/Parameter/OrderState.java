@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import java.io.Serializable;
 
-@XmlRootElement(name="SERVICEPHONE")
+@XmlRootElement(name="ORDERSTATE")
 public class OrderState extends Parameter implements Serializable {
     private int state;
 
