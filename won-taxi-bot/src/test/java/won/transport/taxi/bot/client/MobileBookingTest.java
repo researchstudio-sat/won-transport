@@ -2,10 +2,7 @@ package won.transport.taxi.bot.client;
 
 import org.junit.Assert;
 import org.junit.Test;
-import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
-import won.transport.taxi.bot.client.entity.Parameter.DestinationAdress;
-import won.transport.taxi.bot.client.entity.Parameter.OrderId;
-import won.transport.taxi.bot.client.entity.Parameter.Parameter;
+import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.client.entity.Result;
 
 public class MobileBookingTest {
@@ -38,19 +35,19 @@ public class MobileBookingTest {
     @Test
     public void testPing_OK() throws Exception{
         init();
-        Assert.assertTrue(mobileBooking.ping().getError() == null);
+        Assert.assertNull(mobileBooking.ping().getError());
     }
 
     @Test
     public void testPing_Unauthorized() throws Exception{
         initUnauthorized();
-        Assert.assertFalse(mobileBooking.ping().getError() == null);
+        Assert.assertNotNull(mobileBooking.ping().getError());
     }
 
     @Test
     public void testPing_WrongUrl() throws Exception{
         initWrongURL();
-        Assert.assertFalse(mobileBooking.ping().getError() == null);
+        Assert.assertNotNull(mobileBooking.ping().getError());
     }
 
     @Test
@@ -66,11 +63,29 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertTrue(mobileBooking.checkOrder(departureAdress).getError() == null);
+        Assert.assertNull(mobileBooking.checkOrder(departureAdress).getError());
     }
 
     @Test
-    public void testCreateOrder_OK() throws Exception {
+    public void testGetServiceList_OK() throws Exception {
+        init();
+
+        Result result = mobileBooking.getServiceList(new State("D"));
+
+        Assert.assertNull(result.getError());
+    }
+
+    @Test
+    public void testGetServiceListWithPostCode_OK() throws Exception {
+        init();
+
+        Result result = mobileBooking.getServiceList(new State("D"), new PostCode("80333"));
+
+        Assert.assertNull(result.getError());
+    }
+
+    @Test
+    public void testGetPrice_OK() throws Exception {
         init();
         DepartureAdress departureAdress = new DepartureAdress(
                 11.5599861703,
@@ -91,12 +106,18 @@ public class MobileBookingTest {
                 "346",
                 "");
 
-        Result result = mobileBooking.createOrder(departureAdress);
-        Assert.assertTrue(result.getError() == null);
+        Result result = mobileBooking.getPrice(departureAdress, destinationAdress);
+        Assert.assertNull(result.getError());
+        Assert.assertNotNull(result.getParameter());
+        for(Parameter param : result.getParameter()){
+            if(param instanceof Price){
+                Assert.assertTrue(((Price) param).getAmount() == 10.0);
+            }
+        }
     }
 
     @Test
-    public void testCancelOrder_OK() throws Exception{
+    public void testCreateOrderCheckOrderAndCancelOrder_OK() throws Exception{
         init();
         DepartureAdress departureAdress = new DepartureAdress(
                 11.5599861703,
@@ -109,17 +130,25 @@ public class MobileBookingTest {
                 "");
 
         Result createResult = mobileBooking.createOrder(departureAdress);
+        Assert.assertNull(createResult.getError());
+        Assert.assertNotNull(createResult.getParameter());
 
         for(Parameter param : createResult.getParameter()){
             if(param instanceof OrderId){
-                Result cancelationResult = mobileBooking.cancelOrder(((OrderId) param).getOrderId());
-                Assert.assertTrue(cancelationResult.getError() == null);
+                OrderId orderId = (OrderId) param;
+
+                Result orderStateResult = mobileBooking.getOrderState(orderId.getOrderId());
+                Assert.assertNull(orderStateResult.getError());
+                Result orderStateExtendedResult = mobileBooking.getOrderState(orderId.getOrderId(), true);
+                Assert.assertNull(orderStateExtendedResult.getError());
+                Result cancelationResult = mobileBooking.cancelOrder(orderId.getOrderId());
+                Assert.assertNull(cancelationResult.getError());
             }
         }
     }
 
     @Test
-    public void testGetOrderState_OK() throws Exception{
+    public void testGetRadar_OK() throws Exception{
         init();
         DepartureAdress departureAdress = new DepartureAdress(
                 11.5599861703,
@@ -131,14 +160,60 @@ public class MobileBookingTest {
                 "345",
                 "");
 
-        Result createResult = mobileBooking.createOrder(departureAdress);
+        Result getRadarResult = mobileBooking.getRadar(departureAdress);
 
-        for(Parameter param : createResult.getParameter()){
-            if(param instanceof OrderId){
-                Result orderStateResult = mobileBooking.getOrderState(((OrderId) param).getOrderId());
-                Assert.assertTrue(orderStateResult.getError() == null);
-            }
-        }
+        Assert.assertNull(getRadarResult.getError());
+    }
+
+    @Test
+    public void testGetVehicleList_OK() throws Exception{
+        init();
+        DepartureAdress departureAdress = new DepartureAdress(
+                11.5599861703,
+                48.1448925705,
+                "D",
+                "80333",
+                "München",
+                "Karlsstraße",
+                "345",
+                "");
+
+        Result getVehicleListResult = mobileBooking.getVehicleList(departureAdress);
+
+        Assert.assertNull(getVehicleListResult.getError());
+    }
+
+    /*@Test
+    public void testSendTextMessageWithVehicleId_OK() throws Exception {
+        init();
+
+        VehicleId vehicleId = new VehicleId();
+        ServiceId serviceId = new ServiceId();
+        Text text = new Text("testmessage");
+
+        Result result = mobileBooking.sendTextMessage(vehicleId, serviceId, text);
+        Assert.assertNull(result.getError());
+    }
+
+    @Test
+    public void testSendTextMessageWithOrderId_OK() throws Exception {
+        init();
+
+        OrderId orderId = new OrderId();
+        ServiceId serviceId = new ServiceId();
+        Text text = new Text("testmessage");
+
+        Result result = mobileBooking.sendTextMessage(orderId, serviceId, text);
+        Assert.assertNull(result.getError());
+    }*/
+
+    @Test
+    public void testGetFleetRadar_OK() throws Exception {
+        init();
+
+        Result getFleetRadarResult = mobileBooking.getFleetRadar();
+
+        Assert.assertNull(getFleetRadarResult.getError());
     }
 
     @Test
@@ -153,7 +228,7 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertTrue(mobileBooking.checkOrder(departureAdress).getError() == null);
+        Assert.assertNotNull(mobileBooking.checkOrder(departureAdress).getError());
     }
 
     @Test
@@ -168,6 +243,6 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertTrue(mobileBooking.checkOrder(departureAdress).getError() == null);
+        Assert.assertNotNull(mobileBooking.checkOrder(departureAdress).getError());
     }
 }

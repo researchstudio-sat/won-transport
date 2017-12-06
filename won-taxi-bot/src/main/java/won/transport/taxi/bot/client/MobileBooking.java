@@ -38,21 +38,18 @@ public class MobileBooking implements InitializingBean{
 
     private RestTemplate restTemplate;
     private HttpHeaders defaultHeaders;
+    private int msgId;
 
     public Result ping() {
-        Function ping = new Function("PING");
-        HttpEntity entity = new HttpEntity(ping, defaultHeaders);
-
-        return postEntity(entity);
+        return executeFunction("PING");
     }
 
     public Result checkOrder(DepartureAdress departureAdress) {
         return checkOrder(departureAdress, null);
     }
 
-
     public Result checkOrder(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
-        List<Parameter> parameterList = new ArrayList<Parameter>();
+        List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
         parameterList.add(departureAdress);
@@ -61,23 +58,21 @@ public class MobileBooking implements InitializingBean{
             parameterList.add(destinationAdress);
         }
 
-        Function checkOrder = new Function("CHECKORDER", parameterList);
-        HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
-
-        return postEntity(entity);
+        return executeFunction("CHECKORDER", parameterList);
     }
 
     public Result getPrice(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
-        List<Parameter> parameterList = new ArrayList<Parameter>();
+        List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
         parameterList.add(departureAdress);
         parameterList.add(destinationAdress);
 
-        Function checkOrder = new Function("GETPRICE", parameterList);
-        HttpEntity entity = new HttpEntity(checkOrder, defaultHeaders);
+        return executeFunction("GETPRICE", parameterList);
+    }
 
-        return postEntity(entity);
+    public Result getFleetRadar() {
+        return executeFunction("GETFLEETRADAR");
     }
 
     public Result createOrder(DepartureAdress departureAdress) {
@@ -88,38 +83,85 @@ public class MobileBooking implements InitializingBean{
         List<Parameter> parameterList = new ArrayList<Parameter>();
 
         parameterList.add(new OrderType());
-        parameterList.add(new Test()); //TODO: REMOVE FLAG TO BE SET FOR TEST TAXI ORDERS
         parameterList.add(departureAdress);
 
         if(destinationAdress != null){
             parameterList.add(destinationAdress);
         }
 
-        Function createOrder = new Function("CREATEORDER", parameterList);
-        HttpEntity entity = new HttpEntity(createOrder, defaultHeaders);
-
-        return postEntity(entity);
+        return executeFunction("CREATEORDER", parameterList);
     }
 
-    public Result cancelOrder(String orderId) {
+    public Result getRadar(DepartureAdress departureAdress){
         List<Parameter> parameterList = new ArrayList<>();
-        parameterList.add(new OrderId(orderId));
 
-        Function cancelOrder = new Function("CANCELORDER", parameterList);
-        HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
+        parameterList.add(new OrderType());
+        parameterList.add(departureAdress);
 
-        return postEntity(entity);
+        return executeFunction("GETRADAR", parameterList);
+    }
+
+    public Result getVehicleList(DepartureAdress departureAdress){
+        List<Parameter> parameterList = new ArrayList<>();
+
+        parameterList.add(new OrderType());
+        parameterList.add(departureAdress);
+
+        return executeFunction("GETVEHICLELIST", parameterList);
+    }
+
+    public Result getServiceList(State state) {
+        return getServiceList(state, null);
+    }
+
+    public Result getServiceList(State state, PostCode postCode) {
+        List<Parameter> parameterList = new ArrayList<>();
+
+        parameterList.add(state);
+
+        if(postCode != null){
+            parameterList.add(postCode);
+        }
+
+        return executeFunction("GETSERVICELIST", parameterList);
+    }
+
+    /*
+
+    public Result sendTextMessage(VehicleId vehicleId, ServiceId serviceId, Text text) {
+        return sendTextMessage(vehicleId, serviceId, text);
+    }
+
+    public Result sendTextMessage(OrderId orderId, ServiceId serviceId, Text text) {
+        return sendTextMessage(orderId, serviceId, text);
+    }
+
+    private Result sendTextMessage(Parameter param, ServiceId serviceId, Text text){
+        List<Parameter> parameterList = new ArrayList<Parameter>();
+
+        parameterList.add(param); //either orderId or vehicleId
+        parameterList.add(serviceId);
+        parameterList.add(text);
+
+        return executeFunction("SENDTEXTMESSAGE", parameterList);
+    }*/
+
+    public Result cancelOrder(String orderId) {
+        List<Parameter> parameterList = Collections.singletonList(new OrderId(orderId));
+
+        return executeFunction("CANCELORDER", parameterList);
     }
 
     public Result getOrderState(String orderId) {
-        List<Parameter> parameterList = new ArrayList<>();
-        parameterList.add(new OrderId(orderId));
-
-        Function cancelOrder = new Function("GETORDERSTATE", parameterList);
-        HttpEntity entity = new HttpEntity(cancelOrder, defaultHeaders);
-
-        return postEntity(entity);
+        return getOrderState(orderId, false);
     }
+
+    public Result getOrderState(String orderId, boolean extended) {
+        List<Parameter> parameterList = Collections.singletonList(new OrderId(orderId));
+
+        return executeFunction("GETORDERSTATE" + (extended ? "_EXTENDED" : ""), parameterList);
+    }
+
     /**
      * PURE HELPER METHOD TO VALIDATE ALL CERTIFICATES
      * @return
@@ -146,7 +188,14 @@ public class MobileBooking implements InitializingBean{
         return httpClient;
     }
 
-    private Result postEntity(HttpEntity entity) {
+    private Result executeFunction(String name) {
+        return executeFunction(name, null);
+    }
+
+    private Result executeFunction(String name, List<Parameter> parameterList) {
+        Function function = new Function(name, msgId++, parameterList);
+        HttpEntity entity = new HttpEntity(function, defaultHeaders);
+
         try{
             ResponseEntity<Result> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, Result.class);
 
