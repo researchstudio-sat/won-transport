@@ -12,15 +12,10 @@ public class Vehicle extends Parameter implements Serializable {
     private String id;
     private double x;
     private double y;
+    private int arrivalMinutes;
+    private int state; //0=Free 1=Occupied
 
-    public Vehicle() {
-    }
-
-    public Vehicle(String id, double x, double y) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-    }
+    public Vehicle() {}
 
     @XmlAttribute(name="ID")
     public String getId() {
@@ -47,5 +42,23 @@ public class Vehicle extends Parameter implements Serializable {
 
     public void setY(double y) {
         this.y = y;
+    }
+
+    @XmlAttribute(name="ARRIVALMINUTES")
+    public int getArrivalMinutes() {
+        return arrivalMinutes;
+    }
+
+    @XmlAttribute(name="STATE")
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setArrivalMinutes(int arrivalMinutes) {
+        this.arrivalMinutes = arrivalMinutes;
     }
 }
