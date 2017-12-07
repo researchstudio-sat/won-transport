@@ -23,21 +23,21 @@ import java.io.Serializable;
 @XmlRootElement(name="SERVICENAME")
 public class ServiceName extends Parameter implements Serializable {
 
-    private String serviceName;
+    private String value;
 
     public ServiceName() {
     }
 
-    public ServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public ServiceName(String value) {
+        this.value = value;
     }
 
     @XmlValue
-    public String getServiceName() {
-        return serviceName;
+    public String getValue() {
+        return value;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

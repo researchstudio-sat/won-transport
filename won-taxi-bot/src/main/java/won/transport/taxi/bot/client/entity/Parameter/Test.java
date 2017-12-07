@@ -9,6 +9,14 @@ import java.io.Serializable;
  */
 @XmlRootElement(name="TEST")
 public class Test extends Parameter implements Serializable {
+    private int value=1;
+
     @XmlValue
-    public int value=1;
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
 }

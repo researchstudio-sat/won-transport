@@ -22,6 +22,14 @@ import java.io.Serializable;
 
 @XmlRootElement(name="ORDERTYPE")
 public class OrderType extends Parameter implements Serializable {
+    private String value = "1";
+
     @XmlValue
-    public String orderType="1";
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

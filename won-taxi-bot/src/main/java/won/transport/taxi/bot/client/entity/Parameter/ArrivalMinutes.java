@@ -22,21 +22,21 @@ import java.io.Serializable;
 
 @XmlRootElement(name="ARRIVALMINUTES")
 public class ArrivalMinutes extends Parameter implements Serializable {
-    private int minutes;
+    private int value;
 
     public ArrivalMinutes() {
     }
 
-    public ArrivalMinutes(int minutes) {
-        this.minutes = minutes;
+    public ArrivalMinutes(int value) {
+        this.value = value;
     }
 
     @XmlValue
-    public int getMinutes() {
-        return minutes;
+    public int getValue() {
+        return value;
     }
 
-    public void setMinutes(int minutes) {
-        this.minutes = minutes;
+    public void setValue(int value) {
+        this.value = value;
     }
 }
