@@ -137,11 +137,11 @@ public class MobileBookingTest {
             if(param instanceof OrderId){
                 OrderId orderId = (OrderId) param;
 
-                Result orderStateResult = mobileBooking.getOrderState(orderId.getOrderId());
+                Result orderStateResult = mobileBooking.getOrderState(orderId.getValue());
                 Assert.assertNull(orderStateResult.getError());
-                Result orderStateExtendedResult = mobileBooking.getOrderState(orderId.getOrderId(), true);
+                Result orderStateExtendedResult = mobileBooking.getOrderState(orderId.getValue(), true);
                 Assert.assertNull(orderStateExtendedResult.getError());
-                Result cancelationResult = mobileBooking.cancelOrder(orderId.getOrderId());
+                Result cancelationResult = mobileBooking.cancelOrder(orderId.getValue());
                 Assert.assertNull(cancelationResult.getError());
             }
         }
