@@ -1,8 +1,8 @@
 package won.transport.taxi.bot.service;
 
 import won.protocol.model.Connection;
-import won.transport.taxi.bot.client.entity.Parameter.DepartureAdress;
-import won.transport.taxi.bot.client.entity.Parameter.DestinationAdress;
+import won.transport.taxi.bot.client.entity.Parameter.DepartureAddress;
+import won.transport.taxi.bot.client.entity.Parameter.DestinationAddress;
 
 import java.net.URI;
 
@@ -12,8 +12,8 @@ import java.net.URI;
 public class InformationExtractor {
     //TODO; Create data based on the real info from the payload
 
-    public static DepartureAdress getDepartureAdress(Object payload){
-        return new DepartureAdress(
+    public static DepartureAddress getDepartureAdress(Object payload){
+        return new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -24,8 +24,8 @@ public class InformationExtractor {
                 "");
     }
 
-    public static DestinationAdress getDestinationAdress(Object payload){
-        return new DestinationAdress(
+    public static DestinationAddress getDestinationAdress(Object payload){
+        return new DestinationAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",

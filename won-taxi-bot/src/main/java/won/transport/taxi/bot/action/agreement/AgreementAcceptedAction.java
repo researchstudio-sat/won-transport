@@ -48,10 +48,10 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((AgreementAcceptedEvent) event).getPayload());
-            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((AgreementAcceptedEvent) event).getPayload());
+            DepartureAddress departureAddress = InformationExtractor.getDepartureAdress(((AgreementAcceptedEvent) event).getPayload());
+            DestinationAddress destinationAddress = InformationExtractor.getDestinationAdress(((AgreementAcceptedEvent) event).getPayload());
 
-            Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAdress, destinationAdress);
+            Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress);
             //TODO: SAFE ORDER NUMBER WITH CONNECTION URI FOR LATER USE (e.g. checkups and cancelations or stuff) -> taxiBotContextWrapper.addOfferIdForAgreementURI(...
             //TODO: FIGURE OUT HOW TO HANDLE MULTIPLE ORDERS (BLOCK IF ORDER ALREADY EXISTS)
 
@@ -65,7 +65,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
                 respondWith = "ErrorID:"+ error.getErrorId() + " Text: "+ error.getText();
                 errorPresent = true;
             }else {
-                respondWith = "Ride from " + departureAdress + " to " + destinationAdress + ": ";
+                respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
                 for (Parameter param : createOrderResponse.getParameter()) {
                     if (param instanceof OrderId) {
                         orderId = ((OrderId) param).getValue();

@@ -49,12 +49,12 @@ public class ProposeAgreementAction extends BaseEventBotAction{
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAdress departureAdress = InformationExtractor.getDepartureAdress(((PreconditionMetEvent) event).getPayload());
-            DestinationAdress destinationAdress = InformationExtractor.getDestinationAdress(((PreconditionMetEvent) event).getPayload());
+            DepartureAddress departureAddress = InformationExtractor.getDepartureAdress(((PreconditionMetEvent) event).getPayload());
+            DestinationAddress destinationAddress = InformationExtractor.getDestinationAdress(((PreconditionMetEvent) event).getPayload());
 
-            Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAdress, destinationAdress);
+            Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress);
 
-            String respondWith = "Ride from " + departureAdress + " to " + destinationAdress + ": ";
+            String respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
 
             for(Parameter param : checkOrderResponse.getParameter()){
                 if(param instanceof DisplayText){

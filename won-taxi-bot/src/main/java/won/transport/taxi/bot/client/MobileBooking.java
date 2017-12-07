@@ -44,29 +44,29 @@ public class MobileBooking implements InitializingBean{
         return executeFunction("PING");
     }
 
-    public Result checkOrder(DepartureAdress departureAdress) {
-        return checkOrder(departureAdress, null);
+    public Result checkOrder(DepartureAddress departureAddress) {
+        return checkOrder(departureAddress, null);
     }
 
-    public Result checkOrder(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
+    public Result checkOrder(DepartureAddress departureAddress, DestinationAddress destinationAddress) {
         List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
-        parameterList.add(departureAdress);
+        parameterList.add(departureAddress);
 
-        if(destinationAdress!= null){
-            parameterList.add(destinationAdress);
+        if(destinationAddress != null){
+            parameterList.add(destinationAddress);
         }
 
         return executeFunction("CHECKORDER", parameterList);
     }
 
-    public Result getPrice(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
+    public Result getPrice(DepartureAddress departureAddress, DestinationAddress destinationAddress) {
         List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
-        parameterList.add(departureAdress);
-        parameterList.add(destinationAdress);
+        parameterList.add(departureAddress);
+        parameterList.add(destinationAddress);
 
         return executeFunction("GETPRICE", parameterList);
     }
@@ -75,37 +75,37 @@ public class MobileBooking implements InitializingBean{
         return executeFunction("GETFLEETRADAR");
     }
 
-    public Result createOrder(DepartureAdress departureAdress) {
-        return createOrder(departureAdress, null);
+    public Result createOrder(DepartureAddress departureAddress) {
+        return createOrder(departureAddress, null);
     }
 
-    public Result createOrder(DepartureAdress departureAdress, DestinationAdress destinationAdress) {
+    public Result createOrder(DepartureAddress departureAddress, DestinationAddress destinationAddress) {
         List<Parameter> parameterList = new ArrayList<Parameter>();
 
         parameterList.add(new OrderType());
-        parameterList.add(departureAdress);
+        parameterList.add(departureAddress);
 
-        if(destinationAdress != null){
-            parameterList.add(destinationAdress);
+        if(destinationAddress != null){
+            parameterList.add(destinationAddress);
         }
 
         return executeFunction("CREATEORDER", parameterList);
     }
 
-    public Result getRadar(DepartureAdress departureAdress){
+    public Result getRadar(DepartureAddress departureAddress){
         List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
-        parameterList.add(departureAdress);
+        parameterList.add(departureAddress);
 
         return executeFunction("GETRADAR", parameterList);
     }
 
-    public Result getVehicleList(DepartureAdress departureAdress){
+    public Result getVehicleList(DepartureAddress departureAddress){
         List<Parameter> parameterList = new ArrayList<>();
 
         parameterList.add(new OrderType());
-        parameterList.add(departureAdress);
+        parameterList.add(departureAddress);
 
         return executeFunction("GETVEHICLELIST", parameterList);
     }

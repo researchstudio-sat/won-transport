@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 
 @XmlTransient
-public class Adress extends Parameter implements Serializable {
+public class Address extends Parameter implements Serializable {
     private double x;
     private double y;
     private String state;
@@ -31,12 +31,25 @@ public class Adress extends Parameter implements Serializable {
     private String streetNumber;
     private String text;
 
-    public Adress() {
+    public Address() {
     }
 
-    public Adress(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+    public Address(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+        this(x, y);
+        this.state = state;
+        this.postCode = postCode;
+        this.city = city;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.text = text;
+    }
+
+    public Address(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Address(String state, String postCode, String city, String streetName, String streetNumber, String text) {
         this.state = state;
         this.postCode = postCode;
         this.city = city;

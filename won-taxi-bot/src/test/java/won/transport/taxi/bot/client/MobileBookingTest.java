@@ -54,7 +54,7 @@ public class MobileBookingTest {
     public void testCheckOrder_OK() throws Exception{
         init();
 
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -63,7 +63,7 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertNull(mobileBooking.checkOrder(departureAdress).getError());
+        Assert.assertNull(mobileBooking.checkOrder(departureAddress).getError());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class MobileBookingTest {
     @Test
     public void testGetPrice_OK() throws Exception {
         init();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -96,7 +96,7 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        DestinationAdress destinationAdress = new DestinationAdress(
+        DestinationAddress destinationAddress = new DestinationAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -106,7 +106,7 @@ public class MobileBookingTest {
                 "346",
                 "");
 
-        Result result = mobileBooking.getPrice(departureAdress, destinationAdress);
+        Result result = mobileBooking.getPrice(departureAddress, destinationAddress);
         Assert.assertNull(result.getError());
         Assert.assertNotNull(result.getParameter());
         for(Parameter param : result.getParameter()){
@@ -117,9 +117,45 @@ public class MobileBookingTest {
     }
 
     @Test
+    public void testGetPriceJustCoords_OK() throws Exception {
+        init();
+        DepartureAddress departureAddress = new DepartureAddress(16.370691, 48.216974);
+        DestinationAddress destinationAddress = new DestinationAddress(
+                //16.343933,
+                //48.199128,
+                16.333333,
+                48.189451);
+
+        Result result = mobileBooking.getPrice(departureAddress, destinationAddress);
+        Assert.assertNull(result.getError());
+        Assert.assertNotNull(result.getParameter());
+        for(Parameter param : result.getParameter()){
+            if(param instanceof Price){
+                Assert.assertTrue(((Price) param).getAmount() == 10.37);
+            }
+        }
+    }
+
+    @Test
+    public void testGetPriceJustAddress_OK() throws Exception {
+        init();
+        DepartureAddress departureAddress = new DepartureAddress(0,0,"AT","1090","Wien","Thurngasse","8", "");
+        DestinationAddress destinationAddress = new DestinationAddress(0,0,"AT","1060","Wien","Hirschengasse","10", "");
+
+        Result result = mobileBooking.getPrice(departureAddress, destinationAddress);
+        Assert.assertNull(result.getError());
+        Assert.assertNotNull(result.getParameter());
+        for(Parameter param : result.getParameter()){
+            if(param instanceof Price){
+                Assert.assertTrue(((Price) param).getAmount() == 7.07);
+            }
+        }
+    }
+
+    @Test
     public void testCreateOrderCheckOrderAndCancelOrder_OK() throws Exception{
         init();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -129,7 +165,7 @@ public class MobileBookingTest {
                 "345",
                 "");
 
-        Result createResult = mobileBooking.createOrder(departureAdress);
+        Result createResult = mobileBooking.createOrder(departureAddress);
         Assert.assertNull(createResult.getError());
         Assert.assertNotNull(createResult.getParameter());
 
@@ -150,7 +186,7 @@ public class MobileBookingTest {
     @Test
     public void testGetRadar_OK() throws Exception{
         init();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -160,7 +196,7 @@ public class MobileBookingTest {
                 "345",
                 "");
 
-        Result getRadarResult = mobileBooking.getRadar(departureAdress);
+        Result getRadarResult = mobileBooking.getRadar(departureAddress);
 
         Assert.assertNull(getRadarResult.getError());
     }
@@ -168,7 +204,7 @@ public class MobileBookingTest {
     @Test
     public void testGetVehicleList_OK() throws Exception{
         init();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -178,7 +214,7 @@ public class MobileBookingTest {
                 "345",
                 "");
 
-        Result getVehicleListResult = mobileBooking.getVehicleList(departureAdress);
+        Result getVehicleListResult = mobileBooking.getVehicleList(departureAddress);
 
         Assert.assertNull(getVehicleListResult.getError());
     }
@@ -219,7 +255,7 @@ public class MobileBookingTest {
     @Test
     public void testCheckOrder_Unauthorized() throws Exception{
         initUnauthorized();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -228,13 +264,13 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertNotNull(mobileBooking.checkOrder(departureAdress).getError());
+        Assert.assertNotNull(mobileBooking.checkOrder(departureAddress).getError());
     }
 
     @Test
     public void testCheckOrder_WrongUrl() throws Exception{
         initWrongURL();
-        DepartureAdress departureAdress = new DepartureAdress(
+        DepartureAddress departureAddress = new DepartureAddress(
                 11.5599861703,
                 48.1448925705,
                 "D",
@@ -243,6 +279,6 @@ public class MobileBookingTest {
                 "Karlsstraße",
                 "345",
                 "");
-        Assert.assertNotNull(mobileBooking.checkOrder(departureAdress).getError());
+        Assert.assertNotNull(mobileBooking.checkOrder(departureAddress).getError());
     }
 }

@@ -20,12 +20,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 @XmlRootElement(name="DESTINATIONADDRESS")
-public class DestinationAdress extends Adress implements Serializable {
-    public DestinationAdress() {
+public class DestinationAddress extends Address implements Serializable {
+    public DestinationAddress() {
 
     }
 
-    public DestinationAdress(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
+    public DestinationAddress(double x, double y, String state, String postCode, String city, String streetName, String streetNumber, String text) {
         super(x, y, state, postCode, city, streetName, streetNumber, text);
+    }
+
+    public DestinationAddress(double x, double y) {
+        super(x, y);
+    }
+
+    public DestinationAddress(String state, String postCode, String city, String streetName, String streetNumber, String text) {
+        super(state, postCode, city, streetName, streetNumber, text);
     }
 }
