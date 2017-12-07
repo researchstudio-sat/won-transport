@@ -22,20 +22,20 @@ import java.io.Serializable;
 
 @XmlRootElement(name="ORDERID")
 public class OrderId extends Parameter implements Serializable {
-    private String orderId;
+    private String value;
 
     public OrderId() {}
 
-    public OrderId(String orderId) {
-        this.orderId = orderId;
+    public OrderId(String value) {
+        this.value = value;
     }
 
     @XmlValue
-    public String getOrderId() {
-        return orderId;
+    public String getValue() {
+        return value;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

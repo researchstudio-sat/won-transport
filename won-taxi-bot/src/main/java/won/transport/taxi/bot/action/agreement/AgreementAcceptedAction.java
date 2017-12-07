@@ -68,7 +68,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
                 respondWith = "Ride from " + departureAdress + " to " + destinationAdress + ": ";
                 for (Parameter param : createOrderResponse.getParameter()) {
                     if (param instanceof OrderId) {
-                        orderId = ((OrderId) param).getOrderId();
+                        orderId = ((OrderId) param).getValue();
                         respondWith = respondWith + "Your OrderId is: " + orderId + ";";
                     } else if (param instanceof DisplayText) {
                         respondWith = respondWith + ((DisplayText) param).getValue();
