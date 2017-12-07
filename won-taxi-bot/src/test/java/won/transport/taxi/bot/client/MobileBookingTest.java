@@ -139,8 +139,8 @@ public class MobileBookingTest {
     @Test
     public void testGetPriceJustAddress_OK() throws Exception {
         init();
-        DepartureAddress departureAddress = new DepartureAddress(0,0,"AT","1090","Wien","Thurngasse","8", "");
-        DestinationAddress destinationAddress = new DestinationAddress(0,0,"AT","1060","Wien","Hirschengasse","10", "");
+        DepartureAddress departureAddress = new DepartureAddress("AT","1090","Wien","Thurngasse","8", "");
+        DestinationAddress destinationAddress = new DestinationAddress("AT","1060","Wien","Hirschengasse","10", "");
 
         Result result = mobileBooking.getPrice(departureAddress, destinationAddress);
         Assert.assertNull(result.getError());
