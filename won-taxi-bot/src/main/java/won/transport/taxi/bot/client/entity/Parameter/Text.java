@@ -22,7 +22,6 @@ import java.io.Serializable;
 
 @XmlRootElement(name="TEXT")
 public class Text extends Parameter implements Serializable {
-    @XmlValue
     public String value;
 
     public Text() {
@@ -32,6 +31,7 @@ public class Text extends Parameter implements Serializable {
         this.value = value;
     }
 
+    @XmlValue
     public String getValue() {
         return value;
     }
