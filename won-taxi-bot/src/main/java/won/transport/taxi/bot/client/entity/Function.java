@@ -2,6 +2,7 @@ package won.transport.taxi.bot.client.entity;
 
 import won.transport.taxi.bot.client.entity.Parameter.*;
 
+import javax.management.AttributeList;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.List;
@@ -60,7 +61,8 @@ public class Function implements Serializable{
             @XmlElement(name="STATE", type=State.class),
             @XmlElement(name="POSTCODE", type=PostCode.class),
             @XmlElement(name="ONLY_FREE", type=OnlyFree.class),
-            @XmlElement(name="AREA", type=Area.class)
+            @XmlElement(name="AREA", type=Area.class),
+            @XmlElement(name="ATTRIBUTELIST", type=AttributeList.class)
     })
     public List<Parameter> getParameter() {
         return parameter;

@@ -17,6 +17,13 @@ public class Area extends Parameter implements Serializable {
     public Area() {
     }
 
+    public Area(double min_x, double max_x, double min_y, double max_y) {
+        this.min_x = min_x;
+        this.max_x = max_x;
+        this.min_y = min_y;
+        this.max_y = max_y;
+    }
+
     @XmlAttribute(name="MIN_X")
     public double getMin_x() {
         return min_x;

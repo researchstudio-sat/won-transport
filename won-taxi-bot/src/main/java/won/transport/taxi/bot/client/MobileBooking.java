@@ -71,9 +71,17 @@ public class MobileBooking implements InitializingBean{
         return executeFunction("GETPRICE", parameterList);
     }
 
-    public Result getFleetRadar() {
-        return executeFunction("GETFLEETRADAR");
+    public Result getFleetRadar(Area area) {
+        List<Parameter> parameterList = new ArrayList<>();
+        parameterList.add(area);
+
+        return executeFunction("GETFLEETRADAR", parameterList);
     }
+
+    public Result getFleetRadar() {
+        return getFleetRadar(null);
+    }
+
 
     public Result createOrder(DepartureAddress departureAddress) {
         return createOrder(departureAddress, null);

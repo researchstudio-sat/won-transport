@@ -244,7 +244,9 @@ public class MobileBookingTest {
     public void testGetFleetRadar_OK() throws Exception {
         init();
 
-        Result getFleetRadarResult = mobileBooking.getFleetRadar();
+        Area area = new Area(11.5, 11.6, 48.1, 48.2);
+
+        Result getFleetRadarResult = mobileBooking.getFleetRadar(area);
 
         Assert.assertNull(getFleetRadarResult.getError());
     }
