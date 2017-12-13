@@ -155,17 +155,14 @@ public class MobileBookingTest {
     @Test
     public void testCreateOrderCheckOrderAndCancelOrder_OK() throws Exception{
         init();
-        DepartureAddress departureAddress = new DepartureAddress(
-                11.5599861703,
-                48.1448925705,
-                "D",
-                "80333",
-                "München",
-                "Karlsstraße",
-                "345",
-                "");
+        DepartureAddress departureAddress = new DepartureAddress(16.370691, 48.216974);
+        DestinationAddress destinationAddress = new DestinationAddress(
+                //16.343933,
+                //48.199128,
+                16.333333,
+                48.189451);
 
-        Result createResult = mobileBooking.createOrder(departureAddress);
+        Result createResult = mobileBooking.createOrder(departureAddress, destinationAddress);
         Assert.assertNull(createResult.getError());
         Assert.assertNotNull(createResult.getParameter());
 

@@ -16,6 +16,7 @@
 
 package won.transport.taxi.bot.client.entity.Parameter;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlValue;
 import java.io.Serializable;
@@ -23,6 +24,8 @@ import java.io.Serializable;
 @XmlRootElement(name="POSTCODE")
 public class PostCode extends Parameter implements Serializable {
     private String value;
+    private String id;
+    private String max;
 
     public PostCode() {
     }
@@ -38,5 +41,23 @@ public class PostCode extends Parameter implements Serializable {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @XmlAttribute(name = "ID")
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @XmlAttribute(name = "MAX")
+    public String getMax() {
+        return max;
+    }
+
+    public void setMax(String max) {
+        this.max = max;
     }
 }
