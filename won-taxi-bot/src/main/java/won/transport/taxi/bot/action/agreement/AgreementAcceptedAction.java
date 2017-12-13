@@ -62,7 +62,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
             if(createOrderResponse.getError() != null) {
                 //TODO: ERROR CASES
                 Error error = createOrderResponse.getError();
-                respondWith = "ErrorID:"+ error.getErrorId() + " Text: "+ error.getText();
+                respondWith = "ErrorID:"+ error.getId() + " Text: "+ error.getText();
                 errorPresent = true;
             }else {
                 respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";

@@ -23,7 +23,8 @@ import java.io.Serializable;
 @XmlRootElement(name="ERROR")
 public class Error extends Parameter implements Serializable {
     private String text;
-    private String errorId;
+    private int id;
+    private int type; //1= Fatal Error(session closed), 2= Error(interner programmfehler), 3=Warning(Fehleingabe)
 
     public Error() {
     }
@@ -42,11 +43,20 @@ public class Error extends Parameter implements Serializable {
     }
 
     @XmlAttribute(name = "ID")
-    public String getErrorId() {
-        return errorId;
+    public int getId() {
+        return id;
     }
 
-    public void setErrorId(String errorId) {
-        this.errorId = errorId;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @XmlAttribute(name = "TYP")
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
