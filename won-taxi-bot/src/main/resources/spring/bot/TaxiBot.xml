@@ -52,10 +52,10 @@
 
     <bean id="needProducer" class="won.bot.framework.component.needproducer.impl.DirectoryBasedNeedProducer">
         <property name="directory" value="${taxibot.bot.factoryneedfolder}"/>
-        <property name="filenameFilterRegex" value="^[^\.].*\.ttl"/>
+        <property name="filenameFilterRegex" value="^[^\.].*\.trig"/>
         <property name="repeat" value="false"/>
         <property name="fileBasedNeedProducer">
-            <bean class="won.bot.framework.component.needproducer.impl.TurtleFileNeedProducer"/>
+            <bean class="won.bot.framework.component.needproducer.impl.TrigFileNeedProducer"/>
         </property>
     </bean>
 </beans>
