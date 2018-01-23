@@ -48,6 +48,10 @@
             <groupId>webofneeds</groupId>
             <artifactId>won-bot</artifactId>
         </dependency>
+        <dependency>
+            <groupId>webofneeds</groupId>
+            <artifactId>won-utils-goals</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
