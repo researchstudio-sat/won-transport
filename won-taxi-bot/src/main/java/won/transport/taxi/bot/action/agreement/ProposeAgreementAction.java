@@ -21,6 +21,7 @@ import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
+import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
@@ -30,6 +31,7 @@ import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
+import won.utils.goals.GoalInstantiationResult;
 
 /**
  * Proposes an agreement based on the Data/Payload given within the PreconditionMetEvent
@@ -49,8 +51,10 @@ public class ProposeAgreementAction extends BaseEventBotAction{
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAddress departureAddress = InformationExtractor.getDepartureAdress(((PreconditionMetEvent) event).getPayload());
-            DestinationAddress destinationAddress = InformationExtractor.getDestinationAdress(((PreconditionMetEvent) event).getPayload());
+            GoalInstantiationResult preconditionEventPayload = ((PreconditionEvent) event).getPayload();
+
+            DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(preconditionEventPayload);
+            DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(preconditionEventPayload);
 
             Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress);
 

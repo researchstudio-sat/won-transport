@@ -48,8 +48,8 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAddress departureAddress = InformationExtractor.getDepartureAdress(((AgreementAcceptedEvent) event).getPayload());
-            DestinationAddress destinationAddress = InformationExtractor.getDestinationAdress(((AgreementAcceptedEvent) event).getPayload());
+            DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(((AgreementAcceptedEvent) event).getPayload());
+            DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(((AgreementAcceptedEvent) event).getPayload());
 
             Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress);
             //TODO: SAFE ORDER NUMBER WITH CONNECTION URI FOR LATER USE (e.g. checkups and cancelations or stuff) -> taxiBotContextWrapper.addOfferIdForAgreementURI(...
