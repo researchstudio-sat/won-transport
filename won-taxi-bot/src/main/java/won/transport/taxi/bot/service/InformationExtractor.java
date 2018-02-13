@@ -27,8 +27,8 @@ public class InformationExtractor {
 
 
     static {
-        toLocationRetrievalQuery = loadStringFromFile("/temp/toLocationRetrieval.sq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
-        fromLocationRetrievalQuery = loadStringFromFile("/temp/fromLocationRetrieval.sq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
+        toLocationRetrievalQuery = loadStringFromFile("/temp/toLocationRetrieval.rq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
+        fromLocationRetrievalQuery = loadStringFromFile("/temp/fromLocationRetrieval.rq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
     }
 
     //TODO; Create data based on the real info from the payload
