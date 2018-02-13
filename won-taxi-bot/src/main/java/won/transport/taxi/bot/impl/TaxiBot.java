@@ -26,6 +26,7 @@ import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
@@ -33,6 +34,7 @@ import won.transport.taxi.bot.action.*;
 import won.transport.taxi.bot.action.agreement.AgreementAcceptedAction;
 import won.transport.taxi.bot.action.agreement.AgreementCanceledAction;
 import won.transport.taxi.bot.action.agreement.ProposeAgreementAction;
+import won.transport.taxi.bot.action.precondition.PreconditionUnmetAction;
 
 /**
  * Created by fsuda on 27.02.2017.
@@ -57,13 +59,13 @@ public class TaxiBot extends FactoryBot {
         );
 
 
-        /*bus.subscribe(PreconditionUnmetEvent.class,
+        bus.subscribe(PreconditionUnmetEvent.class,
             new ActionOnEventListener(
                 ctx,
                 "PreconditionUnmetEvent",
-                null
+                new PreconditionUnmetAction(ctx)
             )
-        );*/
+        );
 
         bus.subscribe(AgreementAcceptedEvent.class,
             new ActionOnEventListener(
