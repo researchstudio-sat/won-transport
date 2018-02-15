@@ -19,12 +19,17 @@ package won.transport.taxi.bot.action.agreement;
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
+import won.bot.framework.eventbot.action.EventBotActionUtils;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
+import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandResultEvent;
+import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandSuccessEvent;
+import won.bot.framework.eventbot.filter.impl.SameEventFilter;
 import won.bot.framework.eventbot.listener.EventListener;
+import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.transport.taxi.bot.client.entity.Parameter.*;
@@ -32,6 +37,8 @@ import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 import won.utils.goals.GoalInstantiationResult;
+
+import java.net.URI;
 
 /**
  * Proposes an agreement based on the Data/Payload given within the PreconditionMetEvent
@@ -58,20 +65,37 @@ public class ProposeAgreementAction extends BaseEventBotAction{
 
             Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress);
 
-            String respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
+            if(checkOrderResponse.getError() == null) {
+                String tempRespondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
 
-            for(Parameter param : checkOrderResponse.getParameter()){
-                if(param instanceof DisplayText){
-                    respondWith = respondWith + ((DisplayText) param).getValue();
-                }else if(param instanceof Price){
-                    respondWith = respondWith + " for a price of:"+((Price) param).getAmount()+" "+((Price) param).getCurrency();
+                for (Parameter param : checkOrderResponse.getParameter()) {
+                    if (param instanceof DisplayText) {
+                        tempRespondWith = tempRespondWith + ((DisplayText) param).getValue();
+                    } else if (param instanceof Price) {
+                        tempRespondWith = tempRespondWith + " for a price of:" + ((Price) param).getAmount() + " " + ((Price) param).getCurrency();
+                    }
                 }
-            }
 
-            Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith + "....Do you want to confirm the taxi order? type 'AgreementAcceptedEvent'");
-            //TODO: Create Real Proposal and send it over the EventBus (probably via ConnectionMessageCommandEvent)
+                final String respondWith = tempRespondWith;
+                ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, preconditionEventPayload.getInstanceModel());
+
+                ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new SameEventFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
+                    @Override
+                    protected void doRun(Event event, EventListener executingListener) throws Exception {
+                        ConnectionMessageCommandResultEvent connectionMessageCommandResultEvent = (ConnectionMessageCommandResultEvent) event;
+                        if(connectionMessageCommandResultEvent.isSuccess()){
+                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage(respondWith + "....Do you want to confirm the taxi order? Then accept the proposal");
+                            WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
+                            ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, agreementMessage));
+                        }else{
+                            logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
+                        }
+                    }
+                }));
+
+                ctx.getEventBus().publish(connectionMessageCommandEvent);
+            }
             //TODO: ERROR CASES
-            getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
         }
     }
 }
