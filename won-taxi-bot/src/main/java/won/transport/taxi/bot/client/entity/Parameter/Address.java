@@ -132,6 +132,10 @@ public class Address extends Parameter implements Serializable {
 
     @Override
     public String toString() {
-        return streetName + " " + streetNumber + " , " + postCode + " " + city;
+        if(streetName!=null){
+            return streetName + " " + streetNumber + " , " + postCode + " " + city;
+        }else{
+            return "Lat: " + y +"/Lon: " + y;
+        }
     }
 }
