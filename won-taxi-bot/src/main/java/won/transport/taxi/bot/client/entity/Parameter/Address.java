@@ -135,7 +135,7 @@ public class Address extends Parameter implements Serializable {
         if(streetName!=null){
             return streetName + " " + streetNumber + " , " + postCode + " " + city;
         }else{
-            return "Lat: " + y +"/Lon: " + y;
+            return "Lat: " + y +"/Lon: " + x;
         }
     }
 }
