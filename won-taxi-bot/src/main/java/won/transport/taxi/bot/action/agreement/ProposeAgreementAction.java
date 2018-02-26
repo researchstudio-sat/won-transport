@@ -19,7 +19,6 @@ package won.transport.taxi.bot.action.agreement;
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
-import won.bot.framework.eventbot.action.EventBotActionUtils;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionEvent;
@@ -27,7 +26,7 @@ import won.bot.framework.eventbot.event.impl.analyzation.precondition.Preconditi
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandResultEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandSuccessEvent;
-import won.bot.framework.eventbot.filter.impl.SameEventFilter;
+import won.bot.framework.eventbot.filter.impl.CommandResultFilter;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
 import won.protocol.model.Connection;
@@ -77,9 +76,9 @@ public class ProposeAgreementAction extends BaseEventBotAction{
                 }
 
                 final String respondWith = tempRespondWith;
-                ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, preconditionEventPayload.getInstanceModel());
+                final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, preconditionEventPayload.getInstanceModel());
 
-                ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new SameEventFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
+                ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
                     @Override
                     protected void doRun(Event event, EventListener executingListener) throws Exception {
                         ConnectionMessageCommandResultEvent connectionMessageCommandResultEvent = (ConnectionMessageCommandResultEvent) event;
@@ -94,6 +93,9 @@ public class ProposeAgreementAction extends BaseEventBotAction{
                 }));
 
                 ctx.getEventBus().publish(connectionMessageCommandEvent);
+            }else {
+                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.getError().getText());
+                ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, errorMessage));
             }
             //TODO: ERROR CASES
         }
