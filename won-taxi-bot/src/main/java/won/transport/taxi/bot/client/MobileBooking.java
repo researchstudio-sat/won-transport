@@ -212,12 +212,12 @@ public class MobileBooking implements InitializingBean{
             ResponseEntity<Result> response = restTemplate.exchange(serverUrl, HttpMethod.POST, entity, Result.class);
 
             return response.getBody();
-        }catch(ResourceAccessException e){
+        }/*catch(ResourceAccessException e){
             logger.error(e.getMessage());
             Result result = new Result();
             result.setError(new Error(e.getMessage()));
             return result;
-        }catch(Exception e){
+        }*/catch(Exception e){
             if(tryAgain){
                 logger.debug("WS-Error on first try, just try again once more");
                 return executeFunction(name, parameterList, false);
