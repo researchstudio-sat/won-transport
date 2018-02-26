@@ -4,6 +4,8 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.shared.NotFoundException;
 import won.protocol.model.Connection;
 import won.transport.taxi.bot.client.entity.Parameter.DepartureAddress;
@@ -31,10 +33,17 @@ public class InformationExtractor {
         fromLocationRetrievalQuery = loadStringFromFile("/temp/fromLocationRetrieval.rq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
     }
 
-    //TODO; Create data based on the real info from the payload
+    public static DepartureAddress getDepartureAddress(Model payload){
+        if(payload != null) {
+            QuerySolution solution = executeQuery(fromLocationRetrievalQuery, payload);
 
-    public static DepartureAddress getDepartureAddress(Object payload){
-        throw new UnsupportedOperationException("Method needs to be implemented (AgreementEvent Payload is not defined yet)");
+            if (solution != null) {
+                double lat = solution.getLiteral(LAT).getDouble();
+                double lon = solution.getLiteral(LON).getDouble();
+                return new DepartureAddress(lon, lat);
+            }
+        }
+        return null;
     }
 
     public static DepartureAddress getDepartureAddress(GoalInstantiationResult payload) {
@@ -50,8 +59,17 @@ public class InformationExtractor {
         return null;
     }
 
-    public static DestinationAddress getDestinationAddress(Object payload){
-        throw new UnsupportedOperationException("Method needs to be implemented (AgreementEvent Payload is not defined yet)");
+    public static DestinationAddress getDestinationAddress(Model payload){
+        if(payload != null) {
+            QuerySolution solution = executeQuery(toLocationRetrievalQuery, payload);
+
+            if (solution != null) {
+                double lat = solution.getLiteral(LAT).getDouble();
+                double lon = solution.getLiteral(LON).getDouble();
+                return new DestinationAddress(lon, lat);
+            }
+        }
+        return null;
     }
 
     public static DestinationAddress getDestinationAddress(GoalInstantiationResult payload) {
