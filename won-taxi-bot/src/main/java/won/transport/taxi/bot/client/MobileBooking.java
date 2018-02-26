@@ -201,6 +201,10 @@ public class MobileBooking implements InitializingBean{
     }
 
     private Result executeFunction(String name, List<Parameter> parameterList) {
+        return executeFunction(name, parameterList, true);
+    }
+
+    private Result executeFunction(String name, List<Parameter> parameterList, boolean tryAgain) {
         Function function = new Function(name, msgId++, parameterList);
         HttpEntity entity = new HttpEntity(function, defaultHeaders);
 
@@ -214,11 +218,17 @@ public class MobileBooking implements InitializingBean{
             result.setError(new Error(e.getMessage()));
             return result;
         }catch(Exception e){
-            //FOR SERVER ERROR MAYBE
-            logger.error(e.getMessage());
-            Result result = new Result();
-            result.setError(new Error(e.getMessage()));
-            return result;
+            if(tryAgain){
+                logger.debug("WS-Error on first try, just try again once more");
+                return executeFunction(name, parameterList, false);
+            }else {
+                //FOR SERVER ERROR MAYBE
+                logger.error(e.getMessage());
+
+                Result result = new Result();
+                result.setError(new Error(e.getMessage()));
+                return result;
+            }
         }
     }
 
