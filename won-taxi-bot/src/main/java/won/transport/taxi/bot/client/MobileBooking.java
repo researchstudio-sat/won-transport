@@ -248,8 +248,8 @@ public class MobileBooking implements InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactoryBasicAuth(getCloseableHttpClient(), new HttpHost(serverUrl));
-        requestFactory.setConnectTimeout(2000);
-        requestFactory.setReadTimeout(2000);
+        requestFactory.setConnectTimeout(10000);
+        requestFactory.setReadTimeout(10000);
 
         this.restTemplate = new RestTemplate(requestFactory);
         this.restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username, password));
