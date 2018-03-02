@@ -29,7 +29,9 @@ import won.bot.framework.eventbot.event.impl.analyzation.precondition.Preconditi
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
+import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
 import won.transport.taxi.bot.action.*;
 import won.transport.taxi.bot.action.agreement.AgreementAcceptedAction;
 import won.transport.taxi.bot.action.agreement.AgreementCanceledAction;
@@ -110,6 +112,14 @@ public class TaxiBot extends FactoryBot {
                     new ExecuteDeactivateNeedCommandAction(ctx),
                     new AgreementCanceledAction(ctx)
                 )
+            )
+        );
+
+        //This event is for control purposes
+        bus.subscribe(MessageFromOtherNeedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                new ControlMessageAction(ctx)
             )
         );
     }
