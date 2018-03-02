@@ -34,7 +34,7 @@ public class InformationExtractor {
     }
 
     public static DepartureAddress getDepartureAddress(Model payload){
-        if(payload != null) {
+        if(payload != null && !payload.isEmpty()) {
             QuerySolution solution = executeQuery(fromLocationRetrievalQuery, payload);
 
             if (solution != null) {
@@ -60,7 +60,7 @@ public class InformationExtractor {
     }
 
     public static DestinationAddress getDestinationAddress(Model payload){
-        if(payload != null) {
+        if(payload != null && !payload.isEmpty()) {
             QuerySolution solution = executeQuery(toLocationRetrievalQuery, payload);
 
             if (solution != null) {
@@ -83,11 +83,6 @@ public class InformationExtractor {
             }
         }
         return null;
-    }
-
-    public static URI getAgreementURI(Object payload){
-        //TODO: REIMPL THIS CURRENTLY WE EXPECT A CONNECTION
-        return ((Connection)payload).getConnectionURI();
     }
 
     private static QuerySolution executeQuery(String queryString, Model payload) {
