@@ -21,6 +21,7 @@ import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
@@ -46,16 +47,20 @@ public class AgreementCanceledAction extends BaseEventBotAction {
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
-            URI agreementURI = InformationExtractor.getAgreementURI(con); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL AgreementURI ID
-            String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
+            URI agreementURI = event instanceof AgreementEvent ? ((AgreementEvent)event).getAgreementUri(): null;
+            if(agreementURI != null) {
+                String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
 
-            if(offerId != null){
-                logger.debug("Trying to cancel with the offerId: "+offerId+" fo agreementURI: "+agreementURI);
-                Result cancelOrderResult = taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId);
-                //TODO: IMPL RESPONSE AND ERROR CASES
-                taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
+                if (offerId != null) {
+                    logger.debug("Trying to cancel with the offerId: " + offerId + " fo agreementURI: " + agreementURI);
+                    Result cancelOrderResult = taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId);
+                    //TODO: IMPL RESPONSE AND ERROR CASES
+                    taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
+                } else {
+                    logger.debug("No Offer present for agreementURI:" + agreementURI + ", no need to cancel anything");
+                }
             }else{
-                logger.debug("No Offer present for agreementURI:"+agreementURI+", no need to cancel anything");
+                logger.debug("No agreement present, no need to cancel anything");
             }
         }
     }

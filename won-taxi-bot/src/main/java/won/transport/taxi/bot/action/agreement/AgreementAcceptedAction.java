@@ -31,6 +31,8 @@ import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 
+import java.net.URI;
+
 /**
  * Created by fsuda on 08.05.2017.
  */
@@ -45,6 +47,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
 
         if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof AgreementAcceptedEvent) {
             Connection con = ((AgreementAcceptedEvent) event).getCon();
+            URI agreementUri = ((AgreementAcceptedEvent) event).getAgreementUri();
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
@@ -59,11 +62,15 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
             String orderId = "";
             boolean errorPresent = false;
 
+            Model messageModel;
+
             if(createOrderResponse.getError() != null) {
-                //TODO: ERROR CASES
                 Error error = createOrderResponse.getError();
                 respondWith = "ErrorID:"+ error.getId() + " Text: "+ error.getText();
                 errorPresent = true;
+                messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
+
+                WonRdfUtils.MessageUtils.addProposesToCancel(messageModel, agreementUri);
             }else {
                 respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
                 for (Parameter param : createOrderResponse.getParameter()) {
@@ -77,13 +84,12 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
                     }
                 }
                 respondWith += "....Get into the Taxi when it arrives!";
-
-                taxiBotContextWrapper.addOfferIdForAgreementURI(InformationExtractor.getAgreementURI(con), orderId); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL OFFER ID
+                messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
+                taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL OFFER ID
                 errorPresent = false;
             }
 
-            Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
-            getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
+            ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
         }
     }
 }
