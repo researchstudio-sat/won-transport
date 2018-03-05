@@ -88,6 +88,7 @@ public class ProposeAgreementAction extends BaseEventBotAction{
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, agreementMessage));
                         }else{
                             logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
+                            //TODO: MAKE THE PRECONDITION FAIL BY ADDING A TRIPLE THAT SHOULD NOT BE PRESENT AND RETRACT IT AFTER A CERTAIN TIME TO CHECK AGAIN -> you do not need to send an error then once the analyzer also works on messages from your own side
                         }
                     }
                 }));
@@ -96,6 +97,7 @@ public class ProposeAgreementAction extends BaseEventBotAction{
             }else {
                 Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.getError().getText());
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, errorMessage));
+                //TODO: MAKE THE PRECONDITION FAIL BY ADDING A TRIPLE THAT SHOULD NOT BE PRESENT AND RETRACT IT AFTER A CERTAIN TIME TO CHECK AGAIN -> you do not need to send an error then once the analyzer also works on messages from your own side
             }
             //TODO: ERROR CASES
         }
