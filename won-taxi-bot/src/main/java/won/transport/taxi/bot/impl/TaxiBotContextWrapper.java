@@ -43,6 +43,7 @@ public class TaxiBotContextWrapper extends FactoryBotContextWrapper {
     }
 
     public void addOfferIdForAgreementURI(URI agreementURI, String offerId) {
+        //TODO: WE SHOULD KEEP A MAP CONNURI TO LIST OF GOALURIs AS WELL (TO MAKE IT EASIER TO REMOVE ALL THE DATA IF NECESSARY)
         this.getBotContext().saveToObjectMap(agreementUriOfferIdMapName, agreementURI.toString(), offerId);
     }
 
