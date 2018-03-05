@@ -55,8 +55,6 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(((AgreementAcceptedEvent) event).getPayload());
 
             Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress);
-            //TODO: SAFE ORDER NUMBER WITH CONNECTION URI FOR LATER USE (e.g. checkups and cancelations or stuff) -> taxiBotContextWrapper.addOfferIdForAgreementURI(...
-            //TODO: FIGURE OUT HOW TO HANDLE MULTIPLE ORDERS (BLOCK IF ORDER ALREADY EXISTS)
 
             String respondWith = "";
             String orderId = "";
@@ -85,7 +83,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
                 }
                 respondWith += "....Get into the Taxi when it arrives!";
                 messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
-                taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId); //TODO: IMPL WITH PAYLOAD AND RETRIEVE REAL OFFER ID
+                taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId);
                 errorPresent = false;
             }
 
