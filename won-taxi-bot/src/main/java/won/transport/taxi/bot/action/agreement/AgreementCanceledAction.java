@@ -52,7 +52,7 @@ public class AgreementCanceledAction extends BaseEventBotAction {
                 String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
 
                 if (offerId != null) {
-                    logger.debug("Trying to cancel with the offerId: " + offerId + " fo agreementURI: " + agreementURI);
+                    logger.debug("Trying to cancel with the offerId: " + offerId + " for agreementURI: " + agreementURI);
                     Result cancelOrderResult = taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId);
                     //TODO: IMPL RESPONSE AND ERROR CASES
                     taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
