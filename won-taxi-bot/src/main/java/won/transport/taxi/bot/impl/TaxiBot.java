@@ -27,6 +27,7 @@ import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcce
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalReceivedEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
@@ -37,6 +38,7 @@ import won.transport.taxi.bot.action.agreement.AgreementAcceptedAction;
 import won.transport.taxi.bot.action.agreement.AgreementCanceledAction;
 import won.transport.taxi.bot.action.agreement.ProposeAgreementAction;
 import won.transport.taxi.bot.action.precondition.PreconditionUnmetAction;
+import won.transport.taxi.bot.action.proposal.ProposalReceivedAction;
 
 /**
  * Created by fsuda on 27.02.2017.
@@ -60,7 +62,6 @@ public class TaxiBot extends FactoryBot {
             )
         );
 
-
         bus.subscribe(PreconditionUnmetEvent.class,
             new ActionOnEventListener(
                 ctx,
@@ -75,6 +76,14 @@ public class TaxiBot extends FactoryBot {
                 "AgreementAcceptedEvent",
                 new AgreementAcceptedAction(ctx)
             )
+        );
+
+        bus.subscribe(ProposalReceivedEvent.class,
+             new ActionOnEventListener(
+                 ctx,
+                 "ProposalReceivedEvent",
+                 new ProposalReceivedAction(ctx)
+             )
         );
 
         //TODO: not sure if necessary, depending on what ProposalCanceledEvent is (either cancel a proposal before accepting, or cancel a proposal that was already accepted....)
