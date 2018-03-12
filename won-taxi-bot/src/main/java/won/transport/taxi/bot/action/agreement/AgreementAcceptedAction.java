@@ -66,11 +66,7 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
             }else {
                 orderId = createOrderResult.getOrderId().getValue();
                 messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
-                        + "Your OrderId is: "
-                        + orderId + ";"
-                        + createOrderResult.getDisplayText().getValue()
-                        + " for a price of:"
-                        + createOrderResult.getPrice().getAmount() + " " + createOrderResult.getPrice().getCurrency()
+                        + "Your Order is: " + createOrderResult
                         +"....Get into the Taxi when it arrives!");
                 taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId);
             }

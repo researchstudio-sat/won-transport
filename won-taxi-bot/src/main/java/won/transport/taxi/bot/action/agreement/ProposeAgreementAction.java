@@ -33,6 +33,7 @@ import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.client.entity.Result;
+import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 import won.utils.goals.GoalInstantiationResult;
@@ -62,20 +63,9 @@ public class ProposeAgreementAction extends BaseEventBotAction{
             DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(preconditionEventPayload);
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(preconditionEventPayload);
 
-            Result checkOrderResponse = taxiBotContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress);
+            final ParseableResult checkOrderResponse = new ParseableResult(taxiBotContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress));
 
-            if(checkOrderResponse.getError() == null) {
-                String tempRespondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
-
-                for (Parameter param : checkOrderResponse.getParameter()) {
-                    if (param instanceof DisplayText) {
-                        tempRespondWith = tempRespondWith + ((DisplayText) param).getValue();
-                    } else if (param instanceof Price) {
-                        tempRespondWith = tempRespondWith + " for a price of:" + ((Price) param).getAmount() + " " + ((Price) param).getCurrency();
-                    }
-                }
-
-                final String respondWith = tempRespondWith;
+            if(!checkOrderResponse.isError()) {
                 final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, preconditionEventPayload.getInstanceModel());
 
                 ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
@@ -83,7 +73,8 @@ public class ProposeAgreementAction extends BaseEventBotAction{
                     protected void doRun(Event event, EventListener executingListener) throws Exception {
                         ConnectionMessageCommandResultEvent connectionMessageCommandResultEvent = (ConnectionMessageCommandResultEvent) event;
                         if(connectionMessageCommandResultEvent.isSuccess()){
-                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage(respondWith + "....Do you want to confirm the taxi order? Then accept the proposal");
+                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
+                                    + checkOrderResponse + "....Do you want to confirm the taxi order? Then accept the proposal");
                             WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, agreementMessage));
                         }else{
@@ -95,11 +86,11 @@ public class ProposeAgreementAction extends BaseEventBotAction{
 
                 ctx.getEventBus().publish(connectionMessageCommandEvent);
             }else {
-                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.getError().getText());
+                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString());
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, errorMessage));
                 //TODO: MAKE THE PRECONDITION FAIL BY ADDING A TRIPLE THAT SHOULD NOT BE PRESENT AND RETRACT IT AFTER A CERTAIN TIME TO CHECK AGAIN -> you do not need to send an error then once the analyzer also works on messages from your own side
+                //TODO: ERROR CASES
             }
-            //TODO: ERROR CASES
         }
     }
 }

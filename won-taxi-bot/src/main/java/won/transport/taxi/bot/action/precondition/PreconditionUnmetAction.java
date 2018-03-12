@@ -33,7 +33,7 @@ import won.utils.goals.GoalInstantiationResult;
 /**
  * Action that sends a message into the conversation about the missing/faulty preconditions(shapes) within the PreconditionUnmetEvent
  */
-public class PreconditionUnmetAction extends BaseEventBotAction{
+public class PreconditionUnmetAction extends BaseEventBotAction {
 
     public PreconditionUnmetAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
