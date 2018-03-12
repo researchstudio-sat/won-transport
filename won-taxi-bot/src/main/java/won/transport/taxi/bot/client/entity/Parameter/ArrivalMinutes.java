@@ -39,4 +39,8 @@ public class ArrivalMinutes extends Parameter implements Serializable {
     public void setValue(int value) {
         this.value = value;
     }
+
+    public String toString() {
+        return "ArrivalMinutes:'" + value +"'";
+    }
 }

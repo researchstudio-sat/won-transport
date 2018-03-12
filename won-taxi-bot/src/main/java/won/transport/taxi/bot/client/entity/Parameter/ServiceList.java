@@ -31,4 +31,14 @@ public class ServiceList extends Parameter implements Serializable {
     public List<Service> getServiceList() {
         return serviceList;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ServiceList: {");
+
+        for(Service s : serviceList) {
+            sb.append(s.toString()).append(",");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

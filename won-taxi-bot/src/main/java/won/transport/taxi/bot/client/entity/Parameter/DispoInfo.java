@@ -42,4 +42,8 @@ public class DispoInfo extends Parameter implements Serializable {
     public void setCancelInfo(String cancelInfo) {
         this.cancelInfo = cancelInfo;
     }
+
+    public String toString() {
+        return "DispoInfo: '"+"SectorId"+sectorId+" SectorName:"+sectorName+" cancelInfo:"+cancelInfo+"'";
+    }
 }

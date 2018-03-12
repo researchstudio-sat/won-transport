@@ -39,4 +39,8 @@ public class ServicePhone extends Parameter implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public String toString() {
+        return "ServicePhone:'" + value +"'";
+    }
 }

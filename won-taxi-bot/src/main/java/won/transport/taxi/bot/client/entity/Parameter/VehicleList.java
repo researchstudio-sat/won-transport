@@ -31,4 +31,14 @@ public class VehicleList extends Parameter implements Serializable {
     public List<Vehicle> getVehicleList() {
         return vehicleList;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("VehicleList: {");
+
+        for(Vehicle v : vehicleList) {
+            sb.append(v.toString()).append(",");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

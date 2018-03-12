@@ -124,4 +124,9 @@ public class Vehicle extends Parameter implements Serializable {
     public void setAttributeList(List<Attribute> attributeList) {
         this.attributeList = attributeList;
     }
+
+    public String toString() {
+        //TODO: Implement Vehicle Info
+        return "Vehicle:'NO VEHICLE IFNO IMPLEMENTED YET'";
+    }
 }

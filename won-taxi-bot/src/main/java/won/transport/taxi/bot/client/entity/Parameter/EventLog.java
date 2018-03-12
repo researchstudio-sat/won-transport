@@ -83,4 +83,15 @@ public class EventLog extends Parameter implements Serializable {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    @Override
+    public String toString() {
+        return "EventLog: '" +
+                "text:" + text +
+                " id:" + id +
+                " vehicleId:" + vehicleId +
+                " driverId:" + driverId +
+                " driverName:" + driverName +
+                " userId:" + userId + "'";
+    }
 }

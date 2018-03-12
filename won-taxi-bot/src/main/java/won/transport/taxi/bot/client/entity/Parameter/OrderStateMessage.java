@@ -39,4 +39,8 @@ public class OrderStateMessage extends Parameter implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+
+    public String toString() {
+        return "OrderStateMessage:'" + value +"'";
+    }
 }

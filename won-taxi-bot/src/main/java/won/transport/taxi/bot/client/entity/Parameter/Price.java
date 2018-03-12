@@ -66,4 +66,8 @@ public class Price extends Parameter implements Serializable {
     public void setDisplayText(String displayText) {
         this.displayText = displayText;
     }
+
+    public String toString() {
+        return "Price:'" + amount +" "+currency+" Type:"+type+" DisplayText:"+displayText+"'";
+    }
 }

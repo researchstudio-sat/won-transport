@@ -30,4 +30,14 @@ public class EventLogList extends Parameter implements Serializable {
     public List<EventLog> getEventLogList() {
         return eventLogList;
     }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder("EventLogList: {");
+
+        for(EventLog s : eventLogList) {
+            sb.append(s.toString()).append(",");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }

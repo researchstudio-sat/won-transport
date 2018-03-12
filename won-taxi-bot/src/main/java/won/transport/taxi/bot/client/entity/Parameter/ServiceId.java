@@ -39,4 +39,10 @@ public class ServiceId extends Parameter implements Serializable {
     public void setValue(String value) {
         this.value = value;
     }
+
+
+    @Override
+    public String toString() {
+        return "ServiceId:'" + value +"'";
+    }
 }

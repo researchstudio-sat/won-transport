@@ -59,4 +59,8 @@ public class Error extends Parameter implements Serializable {
     public void setType(int type) {
         this.type = type;
     }
+
+    public String toString(){
+        return "ErrorID: '"+ id + "' Text: '"+ text + "' Type: '" + type + "'";
+    }
 }
