@@ -28,6 +28,7 @@ import won.protocol.util.WonRdfUtils;
 import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.client.entity.Parameter.Error;
 import won.transport.taxi.bot.client.entity.Result;
+import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 
@@ -54,37 +55,24 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
             DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(((AgreementAcceptedEvent) event).getPayload());
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(((AgreementAcceptedEvent) event).getPayload());
 
-            Result createOrderResponse = taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress);
-
-            String respondWith = "";
+            ParseableResult createOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress));
             String orderId = "";
-            boolean errorPresent = false;
 
             Model messageModel;
 
-            if(createOrderResponse.getError() != null) {
-                Error error = createOrderResponse.getError();
-                respondWith = "ErrorID:"+ error.getId() + " Text: "+ error.getText();
-                errorPresent = true;
-                messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
-
+            if(createOrderResult.isError()) {
+                messageModel = WonRdfUtils.MessageUtils.textMessage(createOrderResult.toString());
                 WonRdfUtils.MessageUtils.addProposesToCancel(messageModel, agreementUri);
             }else {
-                respondWith = "Ride from " + departureAddress + " to " + destinationAddress + ": ";
-                for (Parameter param : createOrderResponse.getParameter()) {
-                    if (param instanceof OrderId) {
-                        orderId = ((OrderId) param).getValue();
-                        respondWith = respondWith + "Your OrderId is: " + orderId + ";";
-                    } else if (param instanceof DisplayText) {
-                        respondWith = respondWith + ((DisplayText) param).getValue();
-                    } else if (param instanceof Price) {
-                        respondWith = respondWith + " for a price of:" + ((Price) param).getAmount() + " " + ((Price) param).getCurrency();
-                    }
-                }
-                respondWith += "....Get into the Taxi when it arrives!";
-                messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
+                orderId = createOrderResult.getOrderId().getValue();
+                messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
+                        + "Your OrderId is: "
+                        + orderId + ";"
+                        + createOrderResult.getDisplayText().getValue()
+                        + " for a price of:"
+                        + createOrderResult.getPrice().getAmount() + " " + createOrderResult.getPrice().getCurrency()
+                        +"....Get into the Taxi when it arrives!");
                 taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId);
-                errorPresent = false;
             }
 
             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));

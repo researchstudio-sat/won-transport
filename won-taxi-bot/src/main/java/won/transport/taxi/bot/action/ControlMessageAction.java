@@ -16,6 +16,7 @@ import won.transport.taxi.bot.client.entity.Parameter.OrderState;
 import won.transport.taxi.bot.client.entity.Parameter.OrderStateMessage;
 import won.transport.taxi.bot.client.entity.Parameter.Parameter;
 import won.transport.taxi.bot.client.entity.Result;
+import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 
 import java.net.URI;
@@ -55,20 +56,8 @@ public class ControlMessageAction extends BaseEventBotAction {
                         String agreementUri = presentAgreementUris.next();
                         String orderId = taxiBotContextWrapper.getOfferIdForAgreementURI(URI.create(agreementUri));
 
-                        Result orderState = taxiBotContextWrapper.getMobileBooking().getOrderState(orderId);
-                        String statusMessage = "No Status Available";
-
-                        if(orderState.getError() == null) {
-                            for (Parameter param : orderState.getParameter()) {
-                                if (param instanceof OrderStateMessage) {
-                                    statusMessage = ((OrderStateMessage) param).getValue();
-                                }
-                            }
-                        }else{
-                            statusMessage = orderState.getError().getText();
-                        }
-                        //TODO: ParseMessage better
-                        ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Agreement: <"+agreementUri+"> has the orderId: "+orderId+" with status: '"+statusMessage+"'")));
+                        ParseableResult orderState = new ParseableResult(taxiBotContextWrapper.getMobileBooking().getOrderState(orderId));
+                        ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Agreement: <"+agreementUri+"> has the orderResponse: " + orderState)));
                     }
                 }
             }
