@@ -23,8 +23,8 @@ import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeac
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 
 import won.bot.framework.eventbot.bus.EventBus;
-import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.ProposalAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalReceivedEvent;
@@ -32,11 +32,10 @@ import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
-import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
 import won.transport.taxi.bot.action.*;
-import won.transport.taxi.bot.action.agreement.AgreementAcceptedAction;
+import won.transport.taxi.bot.action.proposal.ProposalAcceptedAction;
 import won.transport.taxi.bot.action.agreement.AgreementCanceledAction;
-import won.transport.taxi.bot.action.agreement.ProposeAgreementAction;
+import won.transport.taxi.bot.action.agreement.PreconditionMetAction;
 import won.transport.taxi.bot.action.precondition.PreconditionUnmetAction;
 import won.transport.taxi.bot.action.proposal.ProposalReceivedAction;
 
@@ -58,7 +57,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "PreconditionMetEvent",
-                new ProposeAgreementAction(ctx)
+                new PreconditionMetAction(ctx)
             )
         );
 
@@ -70,11 +69,11 @@ public class TaxiBot extends FactoryBot {
             )
         );
 
-        bus.subscribe(AgreementAcceptedEvent.class,
+        bus.subscribe(ProposalAcceptedEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "AgreementAcceptedEvent",
-                new AgreementAcceptedAction(ctx)
+                "ProposalAcceptedEvent",
+                new ProposalAcceptedAction(ctx)
             )
         );
 
