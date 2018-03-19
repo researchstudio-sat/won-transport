@@ -12,19 +12,12 @@ import won.protocol.highlevel.HighlevelProtocols;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.WonLinkedDataUtils;
-import won.transport.taxi.bot.client.entity.Parameter.OrderState;
-import won.transport.taxi.bot.client.entity.Parameter.OrderStateMessage;
-import won.transport.taxi.bot.client.entity.Parameter.Parameter;
-import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 
 import java.net.URI;
 import java.util.Iterator;
 
-/**
- * Created by fsuda on 02.03.2018.
- */
 public class ControlMessageAction extends BaseEventBotAction {
     public ControlMessageAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
@@ -65,7 +58,7 @@ public class ControlMessageAction extends BaseEventBotAction {
     }
 
     private void publishAnalyzingMessage(Connection connection) {
-        Model messageModel = WonRdfUtils.MessageUtils.textMessage("Calculating your Orderstatus...");
-        getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel)); //TODO: REMOVE THIS OR CHANGE IT TO A SORT-OF PROCESSING MESSAGE TYPE
+        Model messageModel = WonRdfUtils.MessageUtils.processingMessage("Calculating your Orderstatus...");
+        getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
     }
 }
