@@ -43,9 +43,9 @@ import java.net.URI;
 /**
  * Proposes an agreement based on the Data/Payload given within the PreconditionMetEvent
  */
-public class ProposeAgreementAction extends BaseEventBotAction{
+public class PreconditionMetAction extends BaseEventBotAction{
 
-    public ProposeAgreementAction(EventListenerContext eventListenerContext) {
+    public PreconditionMetAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
     }
 
@@ -80,6 +80,7 @@ public class ProposeAgreementAction extends BaseEventBotAction{
                         }else{
                             logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
                             //TODO: MAKE THE PRECONDITION FAIL BY ADDING A TRIPLE THAT SHOULD NOT BE PRESENT AND RETRACT IT AFTER A CERTAIN TIME TO CHECK AGAIN -> you do not need to send an error then once the analyzer also works on messages from your own side
+                            //THE ABOVE SENTENCE IS NOT GOING TO BE POSSIBLE, SINCE THE DATA OF THE PROPOSAL WILL NEVER CHANGE AND THUS IT IS NOT POSSIBLE TO ADD A TRIPLE TO SUPPORT THIS
                         }
                     }
                 }));
