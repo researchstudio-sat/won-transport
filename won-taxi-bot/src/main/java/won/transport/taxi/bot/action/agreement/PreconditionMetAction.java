@@ -68,6 +68,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(preconditionEventPayload);
 
             final ParseableResult checkOrderResponse = new ParseableResult(botContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress));
+            final String preconditionUri = ((PreconditionEvent) event).getPreconditionUri();
 
             if(!checkOrderResponse.isError()) {
                 final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
@@ -80,10 +81,10 @@ public class PreconditionMetAction extends BaseEventBotAction{
                             Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
                                     + checkOrderResponse + "....Do you want to confirm the taxi order? Then accept the proposal");
                             WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
-                            botContextWrapper.addPreconditionConversationState(((PreconditionEvent) event).getPreconditionUri(), true); //set the met precondition to false in order to make sure it will be checked again on the next run
+                            botContextWrapper.addPreconditionConversationState(preconditionUri, true); //set the met precondition to false in order to make sure it will be checked again on the next run
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, agreementMessage));
                         }else{
-                            botContextWrapper.addPreconditionConversationState(((PreconditionEvent) event).getPreconditionUri(), false); //set the met precondition to false in order to make sure it will be checked again on the next run
+                            botContextWrapper.addPreconditionConversationState(preconditionUri, false); //set the met precondition to false in order to make sure it will be checked again on the next run
                             logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
                         }
                     }
@@ -91,7 +92,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
 
                 ctx.getEventBus().publish(connectionMessageCommandEvent);
             }else {
-                botContextWrapper.addPreconditionConversationState(((PreconditionEvent) event).getPreconditionUri(), false); //set the met precondition to false in order to make sure it will be checked again on the next run
+                botContextWrapper.addPreconditionConversationState(preconditionUri, false); //set the met precondition to false in order to make sure it will be checked again on the next run
                 Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString());
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
             }
