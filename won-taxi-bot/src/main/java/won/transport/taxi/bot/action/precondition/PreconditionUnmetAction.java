@@ -46,12 +46,13 @@ public class PreconditionUnmetAction extends BaseEventBotAction {
         if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof PreconditionUnmetEvent) {
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
-            TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
+            TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
             GoalInstantiationResult preconditionEventPayload = ((PreconditionEvent) event).getPayload();
 
             String respondWith = "TaxiOrder not possible yet, missing necessary Values: " + preconditionEventPayload;
 
+            botContextWrapper.addPreconditionConversationState(((PreconditionEvent) event).getPreconditionUri(), false); //set the met precondition to false in order to make sure it will be checked again on the next run
             Model messageModel = WonRdfUtils.MessageUtils.textMessage(respondWith);
             //TODO: Create Message that tells the other side which preconditions(shapes) are not yet met in a better way and not just by pushing a string into the conversation
             getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(con, messageModel));
