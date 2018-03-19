@@ -14,31 +14,26 @@
  *      limitations under the License.
  */
 
-package won.transport.taxi.bot.action.agreement;
+package won.transport.taxi.bot.action.proposal;
 
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.event.Event;
-import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementAcceptedEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.ProposalAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.transport.taxi.bot.client.entity.Parameter.*;
-import won.transport.taxi.bot.client.entity.Parameter.Error;
-import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import won.transport.taxi.bot.service.InformationExtractor;
 
 import java.net.URI;
 
-/**
- * Created by fsuda on 08.05.2017.
- */
-public class AgreementAcceptedAction extends BaseEventBotAction {
-    public AgreementAcceptedAction(EventListenerContext eventListenerContext) {
+public class ProposalAcceptedAction extends BaseEventBotAction {
+    public ProposalAcceptedAction(EventListenerContext eventListenerContext) {
         super(eventListenerContext);
     }
 
@@ -46,14 +41,15 @@ public class AgreementAcceptedAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof AgreementAcceptedEvent) {
-            Connection con = ((AgreementAcceptedEvent) event).getCon();
-            URI agreementUri = ((AgreementAcceptedEvent) event).getAgreementUri();
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof ProposalAcceptedEvent) {
+            ProposalAcceptedEvent proposalAcceptedEvent = (ProposalAcceptedEvent) event;
+            Connection con = proposalAcceptedEvent.getCon();
+            URI agreementUri = proposalAcceptedEvent.getAgreementUri();
 
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(((AgreementAcceptedEvent) event).getPayload());
-            DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(((AgreementAcceptedEvent) event).getPayload());
+            DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(proposalAcceptedEvent.getPayload());
+            DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(proposalAcceptedEvent.getPayload());
 
             ParseableResult createOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress));
             String orderId = "";
