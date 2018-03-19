@@ -22,6 +22,7 @@ import org.apache.jena.query.DatasetFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFFormat;
+import won.bot.framework.bot.context.FactoryBotContextWrapper;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.EventBotActionUtils;
 import won.bot.framework.eventbot.action.impl.needlifecycle.AbstractCreateNeedAction;
@@ -88,6 +89,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         EventListener successCallback = successEvent -> {
             logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
             //publish connect between the specific offer and the requester need
+            ((FactoryBotContextWrapper) ctx.getBotContextWrapper()).addFactoryNeedURIOfferRelation(factoryOfferURI, factoryHintEvent.getFactoryNeedURI());
             bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI()));
         };
 
