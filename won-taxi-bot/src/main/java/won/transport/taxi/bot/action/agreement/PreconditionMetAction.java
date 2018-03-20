@@ -90,7 +90,6 @@ public class PreconditionMetAction extends BaseEventBotAction{
 
                 ctx.getEventBus().publish(connectionMessageCommandEvent);
             }else {
-                botContextWrapper.addPreconditionConversationState(preconditionUri, false); //set the met precondition to false in order to make sure it will be checked again on the next run
                 Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString());
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
             }
