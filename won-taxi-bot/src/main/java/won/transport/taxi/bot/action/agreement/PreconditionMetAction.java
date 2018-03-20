@@ -81,10 +81,8 @@ public class PreconditionMetAction extends BaseEventBotAction{
                             Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
                                     + checkOrderResponse + "....Do you want to confirm the taxi order? Then accept the proposal");
                             WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
-                            botContextWrapper.addPreconditionConversationState(preconditionUri, true); //set the met precondition to false in order to make sure it will be checked again on the next run
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, agreementMessage));
                         }else{
-                            botContextWrapper.addPreconditionConversationState(preconditionUri, false); //set the met precondition to false in order to make sure it will be checked again on the next run
                             logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
                         }
                     }

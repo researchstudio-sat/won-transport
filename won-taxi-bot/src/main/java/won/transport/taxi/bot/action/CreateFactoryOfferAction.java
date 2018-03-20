@@ -58,7 +58,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
     private static final String goalString;
 
     static {
-        goalString = InformationExtractor.loadStringFromFile("/temp/goals.trig"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
+        goalString = InformationExtractor.loadStringFromFile("/temp/goals_withoutmax.trig"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
     }
 
     public CreateFactoryOfferAction(EventListenerContext eventListenerContext, URI... facets) {
