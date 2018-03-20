@@ -46,8 +46,6 @@ public class PreconditionUnmetAction extends BaseEventBotAction {
         if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof PreconditionUnmetEvent) {
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
-            TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
-
             GoalInstantiationResult preconditionEventPayload = ((PreconditionEvent) event).getPayload();
 
             String respondWith = "TaxiOrder not possible yet, missing necessary Values: " + preconditionEventPayload;
