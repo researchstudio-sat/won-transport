@@ -16,11 +16,10 @@ import won.bot.framework.eventbot.event.impl.command.connectionmessage.Connectio
 import won.bot.framework.eventbot.filter.impl.CommandResultFilter;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.bot.framework.eventbot.listener.impl.ActionOnFirstEventListener;
-import won.protocol.highlevel.HighlevelProtocols;
+import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.LinkedDataSource;
-import won.protocol.util.linkeddata.WonLinkedDataUtils;
 import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
@@ -68,8 +67,8 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                 TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
                 if(botContextWrapper.hasMetPrecondition(proposalURI)){
-                    Dataset fullConversationDataset = WonLinkedDataUtils.getConversationAndNeedsDataset(con.getConnectionURI(), linkedDataSource);
-                    Model proposalModel = HighlevelProtocols.getProposal(fullConversationDataset, proposalURI.toString());
+                    AgreementProtocolState agreementProtocolState = AgreementProtocolState.of(con.getConnectionURI(), linkedDataSource);
+                    Model proposalModel = agreementProtocolState.getPendingProposal(proposalURI);
 
                     DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(proposalModel);
                     DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(proposalModel);
