@@ -76,6 +76,7 @@ public class AgreementCanceledAction extends BaseEventBotAction {
                         }else{
                             messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed: "+cancelOrderResult);
                         }
+                        taxiBotContextWrapper.removeProposalReferences(agreementURI);
                         taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
                     }else{
                         messageModel = WonRdfUtils.MessageUtils.textMessage(cancelOrderResult.toString());
