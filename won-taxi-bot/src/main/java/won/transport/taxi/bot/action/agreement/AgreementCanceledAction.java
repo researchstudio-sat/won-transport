@@ -53,8 +53,8 @@ public class AgreementCanceledAction extends BaseEventBotAction {
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
             URI agreementURI = event instanceof AgreementEvent ? ((AgreementEvent) event).getAgreementUri(): null;
 
-            //if proposeToCanelUri is null then it is already an accepted ProposeToCancel Message
-            URI proposeToCancelUri = ((AgreementCanceledEvent) event).getProposeToCancelUri();
+            //if messageUri is null then it is already an accepted ProposeToCancel Message
+            URI messageUri = ((AgreementCanceledEvent) event).getMessageUri();
 
             if(agreementURI != null) {
                 String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
@@ -66,17 +66,17 @@ public class AgreementCanceledAction extends BaseEventBotAction {
 
                     ParseableResult cancelOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId));
                     if(!cancelOrderResult.isError()){
-                        if(proposeToCancelUri == null) {
+                        if(messageUri == null) {
                             messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed: "+cancelOrderResult);
                         }else{
                             messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation accepted and successfully executed: "+cancelOrderResult);
-                            WonRdfUtils.MessageUtils.addAccepts(messageModel, proposeToCancelUri);
+                            WonRdfUtils.MessageUtils.addAccepts(messageModel, messageUri);
                         }
                         taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
                     }else{
                         messageModel = WonRdfUtils.MessageUtils.textMessage(cancelOrderResult.toString());
-                        if(proposeToCancelUri != null) {
-                            WonRdfUtils.MessageUtils.addRejects(messageModel, proposeToCancelUri);
+                        if(messageUri != null) {
+                            WonRdfUtils.MessageUtils.addRejects(messageModel, messageUri);
                         }
                     }
                     getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
