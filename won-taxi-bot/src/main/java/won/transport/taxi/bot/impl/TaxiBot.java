@@ -24,6 +24,8 @@ import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationAcceptedEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationRequestedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.ProposalAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
@@ -85,11 +87,18 @@ public class TaxiBot extends FactoryBot {
              )
         );
 
-        //TODO: not sure if necessary, depending on what ProposalCanceledEvent is (either cancel a proposal before accepting, or cancel a proposal that was already accepted....)
-        bus.subscribe(AgreementCanceledEvent.class,
+        bus.subscribe(AgreementCancellationAcceptedEvent.class,
             new ActionOnEventListener(
                 ctx,
-                "AgreementCanceledEvent",
+                "AgreementCancellationAcceptedEvent",
+                new AgreementCanceledAction(ctx)
+            )
+        );
+
+        bus.subscribe(AgreementCancellationRequestedEvent.class,
+            new ActionOnEventListener(
+                ctx,
+                "AgreementCancellationAcceptedEvent",
                 new AgreementCanceledAction(ctx)
             )
         );
