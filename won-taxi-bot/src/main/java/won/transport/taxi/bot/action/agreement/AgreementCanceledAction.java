@@ -51,23 +51,35 @@ public class AgreementCanceledAction extends BaseEventBotAction {
             Connection connection = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
 
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
-            URI agreementURI = event instanceof AgreementEvent ? ((AgreementEvent)event).getAgreementUri(): null;
+            URI agreementURI = event instanceof AgreementEvent ? ((AgreementEvent) event).getAgreementUri(): null;
+
+            //if proposeToCanelUri is null then it is already an accepted ProposeToCancel Message
+            URI proposeToCancelUri = ((AgreementCanceledEvent) event).getProposeToCancelUri();
+
             if(agreementURI != null) {
                 String offerId = taxiBotContextWrapper.getOfferIdForAgreementURI(agreementURI);
 
+
                 if (offerId != null) {
-                    logger.debug("Trying to cancel with the offerId: " + offerId + " for agreementURI: " + agreementURI);
+                    logger.debug("Trying to cancel with the offerId: " + offerId + " for agreementURI: " + agreementURI + ((proposeToCancelUri != null)? (" Cancellation is requested by the Client "+"(messageUri which contains the proposeToCancel) "+proposeToCancelUri+")") : "Cancellation was already accepted by the Client"));
+                    Model messageModel;
+
                     ParseableResult cancelOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId));
                     if(!cancelOrderResult.isError()){
-                        Model messageModel = WonRdfUtils.MessageUtils.textMessage("Cancellation accepted");
-                        //WonRdfUtils.MessageUtils.addAccepts(messageModel, ); //TODO: ADD URI TO ACCEPT WHICH WE DO NOT KNOW YET BASICALLY
-                        getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
+                        if(proposeToCancelUri == null) {
+                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed: "+cancelOrderResult);
+                        }else{
+                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation accepted and successfully executed: "+cancelOrderResult);
+                            WonRdfUtils.MessageUtils.addAccepts(messageModel, proposeToCancelUri);
+                        }
+                        taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
                     }else{
-                        Model messageModel = WonRdfUtils.MessageUtils.textMessage(cancelOrderResult.toString());
-                        getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
+                        messageModel = WonRdfUtils.MessageUtils.textMessage(cancelOrderResult.toString());
+                        if(proposeToCancelUri != null) {
+                            WonRdfUtils.MessageUtils.addRejects(messageModel, proposeToCancelUri);
+                        }
                     }
-                    //TODO: IMPL RESPONSE AND ERROR CASES
-                    taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
+                    getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
                 } else {
                     logger.debug("No Offer present for agreementURI:" + agreementURI + ", no need to cancel anything");
                 }

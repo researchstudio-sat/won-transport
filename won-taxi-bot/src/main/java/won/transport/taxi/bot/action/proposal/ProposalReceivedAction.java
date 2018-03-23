@@ -51,7 +51,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
 
             Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
             ProposalEvent proposalEvent = (ProposalEvent) event;
-            URI proposalURI = proposalEvent.getProposalUri();
+            URI proposalUri = proposalEvent.getProposalUri();
 
             if(!proposalEvent.hasProposesEvents()) {
                 if(proposalEvent.getProposesToCancelEvents().size() > 1) {
@@ -59,16 +59,16 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                     rejectMsg = "Too many proposeToCancel within a message - This Operation is not supported by the Bot";
                 }else {
                     for (URI canceledAgreementUri : proposalEvent.getProposesToCancelEvents()) {
-                        bus.publish(new AgreementCanceledEvent(con, canceledAgreementUri));
+                        bus.publish(new AgreementCanceledEvent(con, canceledAgreementUri, proposalUri));
                     }
                     return;
                 }
             } else if(!proposalEvent.hasProposesToCancelEvents()) {
                 TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-                if(botContextWrapper.hasMetPrecondition(proposalURI)){
+                if(botContextWrapper.hasMetPrecondition(proposalUri)){
                     AgreementProtocolState agreementProtocolState = AgreementProtocolState.of(con.getConnectionURI(), linkedDataSource);
-                    Model proposalModel = agreementProtocolState.getPendingProposal(proposalURI);
+                    Model proposalModel = agreementProtocolState.getPendingProposal(proposalUri);
 
                     DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(proposalModel);
                     DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(proposalModel);
@@ -82,7 +82,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                         Model messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
                                 + "Has the Order: '"+createOrderResponse + "....Get into the Taxi when it arrives!");
 
-                        WonRdfUtils.MessageUtils.addAccepts(messageModel, proposalURI);
+                        WonRdfUtils.MessageUtils.addAccepts(messageModel, proposalUri);
                         ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, messageModel);
 
                         bus.subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
@@ -108,7 +108,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
             }
 
             Model messageModel = WonRdfUtils.MessageUtils.textMessage("Rejecting Proposal due to: " + rejectMsg);
-            WonRdfUtils.MessageUtils.addRejects(messageModel, proposalURI);
+            WonRdfUtils.MessageUtils.addRejects(messageModel, proposalUri);
             bus.publish(new ConnectionMessageCommandEvent(con, messageModel));
         }
     }
