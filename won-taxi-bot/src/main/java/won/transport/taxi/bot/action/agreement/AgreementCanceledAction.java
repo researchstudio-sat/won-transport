@@ -19,6 +19,7 @@ package won.transport.taxi.bot.action.agreement;
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
+import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationAcceptedEvent;
@@ -35,9 +36,11 @@ import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 import java.net.URI;
 
 public class AgreementCanceledAction extends BaseEventBotAction {
+    private AnalyzeBehaviour analyzeBehaviour;
 
-    public AgreementCanceledAction(EventListenerContext eventListenerContext) {
+    public AgreementCanceledAction(EventListenerContext eventListenerContext, AnalyzeBehaviour analyzeBehaviour) {
         super(eventListenerContext);
+        this.analyzeBehaviour = analyzeBehaviour;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class AgreementCanceledAction extends BaseEventBotAction {
                         }else{
                             messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed: "+cancelOrderResult);
                         }
-                        taxiBotContextWrapper.removeProposalReferences(agreementURI);
+                        analyzeBehaviour.removeProposalReferences(agreementURI);
                         taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);
                     }else{
                         messageModel = WonRdfUtils.MessageUtils.textMessage(cancelOrderResult.toString());

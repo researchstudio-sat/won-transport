@@ -4,6 +4,7 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
+import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
@@ -36,8 +37,11 @@ import java.net.URI;
  * If the Order Creation was not successful reject the proposal
  */
 public class ProposalReceivedAction extends BaseEventBotAction {
-    public ProposalReceivedAction(EventListenerContext eventListenerContext) {
+    private AnalyzeBehaviour analyzeBehaviour;
+
+    public ProposalReceivedAction(EventListenerContext eventListenerContext, AnalyzeBehaviour analyzeBehaviour) {
         super(eventListenerContext);
+        this.analyzeBehaviour = analyzeBehaviour;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
             } else if(!proposalEvent.hasProposesToCancelEvents()) {
                 TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-                if(botContextWrapper.hasMetPrecondition(proposalUri)){
+                if(analyzeBehaviour.hasMetPrecondition(proposalUri)){
                     AgreementProtocolState agreementProtocolState = AgreementProtocolState.of(con.getConnectionURI(), linkedDataSource);
                     Model proposalModel = agreementProtocolState.getPendingProposal(proposalUri);
 
@@ -100,7 +104,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                         bus.publish(connectionMessageCommandEvent);
                         return;
                     }
-                }else{
+                } else {
                     rejectMsg = "No PreconditionMet";
                 }
             } else {

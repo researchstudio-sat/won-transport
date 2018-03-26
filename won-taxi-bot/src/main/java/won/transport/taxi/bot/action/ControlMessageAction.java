@@ -8,7 +8,7 @@ import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
 import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
 import won.bot.framework.eventbot.listener.EventListener;
-import won.protocol.highlevel.HighlevelProtocols;
+import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.WonLinkedDataUtils;
@@ -38,7 +38,7 @@ public class ControlMessageAction extends BaseEventBotAction {
                 publishAnalyzingMessage(con);
 
                 Dataset fullConversationDataset = WonLinkedDataUtils.getConversationAndNeedsDataset(con.getConnectionURI(), ctx.getLinkedDataSource());
-                Dataset presentAgreements = HighlevelProtocols.getAgreements(fullConversationDataset);
+                Dataset presentAgreements = AgreementProtocolState.of(fullConversationDataset).getAgreements();
 
                 if(presentAgreements.isEmpty()){
                     ctx.getEventBus().publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("No Agreements Present for your connection")));

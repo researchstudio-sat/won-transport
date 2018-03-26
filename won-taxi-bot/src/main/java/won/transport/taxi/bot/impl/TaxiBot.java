@@ -22,6 +22,8 @@ import won.bot.framework.eventbot.action.impl.MultipleActions;
 import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateNeedCommandAction;
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 
+import won.bot.framework.eventbot.behaviour.BotBehaviour;
+import won.bot.framework.eventbot.behaviour.EagerlyPopulateCacheBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationAcceptedEvent;
@@ -47,12 +49,17 @@ import won.transport.taxi.bot.action.proposal.ProposalReceivedAction;
 public class TaxiBot extends FactoryBot {
     private EventBus bus;
 
+
     protected void initializeFactoryEventListeners() {
         bus = getEventBus();
         EventListenerContext ctx = getEventListenerContext();
 
         AnalyzeBehaviour analyzeBehaviour = new AnalyzeBehaviour(ctx);
         analyzeBehaviour.activate();
+
+        //eagerly cache RDF data
+        BotBehaviour eagerlyCacheBehaviour = new EagerlyPopulateCacheBehaviour(ctx);
+        eagerlyCacheBehaviour.activate();
 
         //Analyzation Events
         bus.subscribe(PreconditionMetEvent.class,
@@ -83,7 +90,7 @@ public class TaxiBot extends FactoryBot {
              new ActionOnEventListener(
                  ctx,
                  "ProposalReceivedEvent",
-                 new ProposalReceivedAction(ctx)
+                 new ProposalReceivedAction(ctx, analyzeBehaviour)
              )
         );
 
@@ -91,7 +98,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "AgreementCancellationAcceptedEvent",
-                new AgreementCanceledAction(ctx)
+                new AgreementCanceledAction(ctx, analyzeBehaviour)
             )
         );
 
@@ -99,7 +106,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "AgreementCancellationAcceptedEvent",
-                new AgreementCanceledAction(ctx)
+                new AgreementCanceledAction(ctx, analyzeBehaviour)
             )
         );
 
@@ -127,7 +134,7 @@ public class TaxiBot extends FactoryBot {
                 new MultipleActions(
                     ctx,
                     new ExecuteDeactivateNeedCommandAction(ctx),
-                    new AgreementCanceledAction(ctx)
+                    new AgreementCanceledAction(ctx, analyzeBehaviour)
                 )
             )
         );

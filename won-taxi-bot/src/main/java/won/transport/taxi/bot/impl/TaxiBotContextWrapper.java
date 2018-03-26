@@ -18,13 +18,11 @@ package won.transport.taxi.bot.impl;
 
 import won.bot.framework.bot.context.BotContext;
 import won.bot.framework.bot.context.FactoryBotContextWrapper;
+import won.bot.framework.eventbot.behaviour.BotBehaviour;
 import won.transport.taxi.bot.client.MobileBooking;
 
 import java.net.URI;
 
-/**
- * Created by fsuda on 04.05.2017.
- */
 public class TaxiBotContextWrapper extends FactoryBotContextWrapper {
     private MobileBooking mobileBooking;
     private String agreementUriOfferIdMapName = getBotName() + ":agreementUriOfferIdMap";
