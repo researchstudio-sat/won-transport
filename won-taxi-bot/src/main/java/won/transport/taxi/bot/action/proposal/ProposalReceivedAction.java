@@ -8,7 +8,7 @@ import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
-import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCanceledEvent;
+import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationRequestedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalReceivedEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
@@ -63,7 +63,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                     rejectMsg = "Too many proposeToCancel within a message - This Operation is not supported by the Bot";
                 }else {
                     for (URI canceledAgreementUri : proposalEvent.getProposesToCancelEvents()) {
-                        bus.publish(new AgreementCanceledEvent(con, canceledAgreementUri, proposalUri));
+                        bus.publish(new AgreementCancellationRequestedEvent(con, canceledAgreementUri, proposalUri));
                     }
                     return;
                 }
