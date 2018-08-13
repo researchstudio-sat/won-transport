@@ -29,8 +29,8 @@ public class InformationExtractor {
 
 
     static {
-        toLocationRetrievalQuery = loadStringFromFile("/temp/toLocationRetrieval.rq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
-        fromLocationRetrievalQuery = loadStringFromFile("/temp/fromLocationRetrieval.rq"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
+        toLocationRetrievalQuery = loadStringFromFile("/correct/toLocationRetrieval.rq");
+        fromLocationRetrievalQuery = loadStringFromFile("/correct/fromLocationRetrieval.rq");
     }
 
     public static DepartureAddress getDepartureAddress(Model payload){
