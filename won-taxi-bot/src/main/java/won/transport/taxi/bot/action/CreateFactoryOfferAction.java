@@ -58,7 +58,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
     private static final String goalString;
 
     static {
-        goalString = InformationExtractor.loadStringFromFile("/temp/goals_withoutmax.trig"); //TODO: SWITCH THIS TO CORRECT AND REMOVE THESE RESOURCES AFTER
+        goalString = InformationExtractor.loadStringFromFile("/correct/goals.trig");
     }
 
     public CreateFactoryOfferAction(EventListenerContext eventListenerContext, URI... facets) {
@@ -90,7 +90,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
             logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
             //publish connect between the specific offer and the requester need
             ((FactoryBotContextWrapper) ctx.getBotContextWrapper()).addFactoryNeedURIOfferRelation(factoryOfferURI, factoryHintEvent.getFactoryNeedURI());
-            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI()));
+            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), "Hi! I could order a taxi for you. First, you have to accept this chat request!"));
         };
 
         EventListener failureCallback = failureEvent -> {
@@ -116,12 +116,12 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
         DefaultNeedModelWrapper requesterNeedModelWrapper = new DefaultNeedModelWrapper(requesterNeedDataSet);
 
-        String connectTitle =  factoryNeedModelWrapper.getSomeTitleFromIsOrAll() + "<->" + requesterNeedModelWrapper.getSomeTitleFromIsOrAll();
+        String connectTitle =  "TaxiBot Offer";//factoryNeedModelWrapper.getSomeTitleFromIsOrAll() + "-" + requesterNeedModelWrapper.getSomeTitleFromIsOrAll();
 
         DefaultNeedModelWrapper needModelWrapper = new DefaultNeedModelWrapper(ctx.getWonNodeInformationService().generateNeedURI(ctx.getNodeURISource().getNodeURI()).toString());
 
         needModelWrapper.setTitle(NeedContentPropertyType.IS, connectTitle);
-        needModelWrapper.setDescription(NeedContentPropertyType.IS, "This is a automatically created need by the TaxiBot");
+        //needModelWrapper.setDescription(NeedContentPropertyType.IS, "This is a automatically created need by the TaxiBot");
         needModelWrapper.addFlag(WON.NO_HINT_FOR_COUNTERPART);
         needModelWrapper.addFlag(WON.NO_HINT_FOR_ME);
         needModelWrapper.setShapesGraphReference(STUB_SHAPES_URI);
