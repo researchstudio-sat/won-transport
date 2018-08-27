@@ -21,10 +21,7 @@ ex2:p2g-shapes {
     <http://example.org/2/TaxiRideShape>
             a                     sh:NodeShape ;
             sh:closed             false ;
-            sh:property [
-                                      sh:path rdf:type;
-                                      sh:minCount 1;
-                                  ];
+            sh:ignoredProperties  ( rdf:type ) ;
             sh:property [
                             sh:path (won:hasBoundingBox won:hasSouthEastCorner);
                             sh:class s:GeoCoordinates ;
@@ -52,9 +49,6 @@ ex2:p2g-shapes {
             sh:minCount 1 ;
             sh:maxCount 1 ;
         ] ;
-        sh:property [
-                                  sh:path rdf:type;
-                                  sh:minCount 1;
-                              ];
+        sh:ignoredProperties ( rdf:type ) ;
         sh:closed true .
 }
