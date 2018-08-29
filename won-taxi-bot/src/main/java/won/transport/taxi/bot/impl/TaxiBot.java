@@ -65,7 +65,7 @@ public class TaxiBot extends FactoryBot {
             new ActionOnEventListener(
                 ctx,
                 "PreconditionMetEvent",
-                new PreconditionMetAction(ctx)
+                new PreconditionMetAction(ctx, analyzeBehaviour)
             )
         );
 
@@ -142,7 +142,7 @@ public class TaxiBot extends FactoryBot {
         bus.subscribe(MessageFromOtherNeedEvent.class,
             new ActionOnEventListener(
                 ctx,
-                new ControlMessageAction(ctx)
+                new ControlMessageAction(ctx, analyzeBehaviour)
             )
         );
     }
