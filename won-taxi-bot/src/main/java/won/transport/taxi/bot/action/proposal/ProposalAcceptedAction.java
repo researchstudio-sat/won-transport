@@ -63,7 +63,7 @@ public class ProposalAcceptedAction extends BaseEventBotAction {
                 orderId = createOrderResult.getOrderId().getValue();
                 messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
                         + "Your Order is: " + createOrderResult
-                        +"....Get into the Taxi when it arrives!");
+                        +"\n\n....Get into the Taxi when it arrives!");
                 taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId);
             }
 

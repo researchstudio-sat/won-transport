@@ -74,8 +74,8 @@ public class PreconditionMetAction extends BaseEventBotAction{
                     protected void doRun(Event event, EventListener executingListener) throws Exception {
                         ConnectionMessageCommandResultEvent connectionMessageCommandResultEvent = (ConnectionMessageCommandResultEvent) event;
                         if(connectionMessageCommandResultEvent.isSuccess()){
-                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
-                                    + checkOrderResponse + "....Do you want to confirm the taxi order? Then accept the proposal");
+                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ":\n\n"
+                                    + checkOrderResponse + "\n\n....Do you want to confirm the taxi order? Then accept the proposal");
                             WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, agreementMessage));
                         }else{
@@ -89,7 +89,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
                 analyzeBehaviour.removePreconditionMetPending(preconditionUri);
                 analyzeBehaviour.addPreconditionMetError(preconditionUri);
 
-                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString() + "\n type 'recheck' to check again");
+                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString() + "\n\n type 'recheck' to check again");
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
             }
         }
