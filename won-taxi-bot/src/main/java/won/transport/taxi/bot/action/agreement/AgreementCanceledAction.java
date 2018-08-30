@@ -74,10 +74,10 @@ public class AgreementCanceledAction extends BaseEventBotAction {
                     ParseableResult cancelOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().cancelOrder(offerId));
                     if(!cancelOrderResult.isError()){
                         if(isRequestedCancellation) {
-                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation accepted and successfully executed: "+cancelOrderResult);
+                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation accepted and successfully executed:\n\n"+cancelOrderResult);
                             WonRdfUtils.MessageUtils.addAccepts(messageModel, messageUri);
                         }else{
-                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed: "+cancelOrderResult);
+                            messageModel = WonRdfUtils.MessageUtils.textMessage("Order Cancellation Cancellation successfully executed:\n\n"+cancelOrderResult);
                         }
                         analyzeBehaviour.removeProposalReferences(agreementURI);
                         taxiBotContextWrapper.removeOfferIdForAgreementURI(agreementURI);

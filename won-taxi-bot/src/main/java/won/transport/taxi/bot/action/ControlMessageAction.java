@@ -58,7 +58,7 @@ public class ControlMessageAction extends BaseEventBotAction {
                         String orderId = taxiBotContextWrapper.getOfferIdForAgreementURI(URI.create(agreementUri));
 
                         ParseableResult orderState = new ParseableResult(taxiBotContextWrapper.getMobileBooking().getOrderState(orderId));
-                        eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Agreement: <" + agreementUri + "> has the orderResponse: " + orderState)));
+                        eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Agreement: <" + agreementUri + ">\n\nhas the orderResponse:\n" + orderState)));
                     }
                 }
             } else if ("preconditions".equals(textMessage)) {

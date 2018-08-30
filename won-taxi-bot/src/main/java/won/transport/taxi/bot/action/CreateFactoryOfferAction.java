@@ -90,7 +90,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
             logger.debug("factoryoffer creation successful, new need URI is {}", factoryOfferURI);
             //publish connect between the specific offer and the requester need
             ((FactoryBotContextWrapper) ctx.getBotContextWrapper()).addFactoryNeedURIOfferRelation(factoryOfferURI, factoryHintEvent.getFactoryNeedURI());
-            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), "Hi! I could order a taxi for you. First, you have to accept this chat request!"));
+            bus.publish(new ConnectCommandEvent(factoryOfferURI, factoryHintEvent.getRequesterURI(), "Hi This is the Automated Taxi-Bot-Demo! I could might be able to order a taxi for you.\n Let's see but first, you have to accept this chat request!"));
         };
 
         EventListener failureCallback = failureEvent -> {
