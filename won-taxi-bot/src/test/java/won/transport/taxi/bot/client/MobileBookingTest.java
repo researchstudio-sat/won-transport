@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.client.entity.Result;
+import won.transport.taxi.bot.entity.ParseableResult;
 
 public class MobileBookingTest {
     private MobileBooking mobileBooking;
@@ -70,9 +71,14 @@ public class MobileBookingTest {
     public void testGetServiceList_OK() throws Exception {
         init();
 
-        Result result = mobileBooking.getServiceList(new State("D"));
+        Result result = mobileBooking.getServiceList(new State("AT"));
 
         Assert.assertNull(result.getError());
+
+        ParseableResult parseableResult = new ParseableResult(result);
+
+        ServiceList sL = parseableResult.getServiceList();
+        Assert.assertNotNull(sL);
     }
 
     @Test
@@ -244,7 +250,7 @@ public class MobileBookingTest {
     public void testGetFleetRadar_OK() throws Exception {
         init();
 
-        Area area = new Area(11.5, 11.6, 48.1, 48.2);
+        Area area = new Area(16.0, 16.5, 48.0, 48.6);
 
         Result getFleetRadarResult = mobileBooking.getFleetRadar(area);
 

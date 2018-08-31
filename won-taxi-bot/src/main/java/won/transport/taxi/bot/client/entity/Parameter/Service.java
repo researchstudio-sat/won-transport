@@ -68,4 +68,15 @@ public class Service extends Parameter implements Serializable{
     public void setAttributeList(List<Attribute> attributeList) {
         this.attributeList = attributeList;
     }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", postCodeList=" + postCodeList +
+                ", attributeList=" + attributeList +
+                '}';
+    }
 }

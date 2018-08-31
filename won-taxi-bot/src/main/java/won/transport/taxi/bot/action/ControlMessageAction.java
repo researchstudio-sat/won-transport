@@ -15,6 +15,7 @@ import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.WonLinkedDataUtils;
+import won.transport.taxi.bot.client.entity.Parameter.*;
 import won.transport.taxi.bot.entity.ParseableResult;
 import won.transport.taxi.bot.impl.TaxiBotContextWrapper;
 
@@ -23,6 +24,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ControlMessageAction extends BaseEventBotAction {
+    public static final String HELP_MESSAGE =
+            "Possible Commands:\n\n" +
+            "'preconditions' list all preconditions for the connection\n" +
+            "'status' calculate the status of made agreements including the orderstate\n" +
+            "'list' show all the available services";
+
     private AnalyzeBehaviour analyzeBehaviour;
 
     public ControlMessageAction(EventListenerContext eventListenerContext, AnalyzeBehaviour analyzeBehaviour) {
@@ -108,7 +115,41 @@ public class ControlMessageAction extends BaseEventBotAction {
                 }
 
             } else if ("help".equals(textMessage)) {
-                eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Possible Commands:\n\n'preconditions' list all preconditions for the connection\n'status' calculate the status of made agreements including the orderstate")));
+                eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage(HELP_MESSAGE)));
+            } else if ("list".equals(textMessage)) {
+                ParseableResult serviceListResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().getServiceList(new State("AT")));
+                if (serviceListResult != null) {
+                    won.transport.taxi.bot.client.entity.Parameter.Error error = serviceListResult.getError();
+
+                    if(error != null) {
+                        eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Retrieving ServiceList failed due to Error: " + error)));
+                    } else {
+                        ServiceList serviceListObject = serviceListResult.getServiceList();
+                        if(serviceListObject == null || serviceListObject.getServiceList().size() == 0) {
+                            eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("No Services available")));
+                        } else {
+                            for(Service service : serviceListObject.getServiceList()) {
+                                String serviceString =
+                                    "ID: " + service.getId() + "\n" +
+                                    "Name: " + service.getName() + "\n" +
+                                    "Phone: " + service.getPhone() + "\n";
+                                List<Attribute> attributes = service.getAttributeList();
+
+                                if(attributes != null && attributes.size() > 0){
+                                    serviceString += "Attributes:\n";
+                                    for(Attribute attribute : attributes) {
+                                        String attributeString = "\tID: " + attribute.getId() + ": " + attribute.getName()+"\n";
+                                        serviceString += attributeString;
+                                    }
+                                }
+
+                                eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage(serviceString)));
+                            }
+                        }
+                    }
+                } else {
+                    eventBus.publish(new ConnectionMessageCommandEvent(con, WonRdfUtils.MessageUtils.textMessage("Retrieving ServiceList failed, try again later")));
+                }
             }
         }
     }
