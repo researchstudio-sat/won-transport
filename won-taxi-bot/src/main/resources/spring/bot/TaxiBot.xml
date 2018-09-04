@@ -44,18 +44,21 @@
         <constructor-arg name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
-    <bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBooking">
+    <!--bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBooking">
         <property name="serverUrl" value="${api.serverUrl}"/>
         <property name="username" value="${api.username}"/>
         <property name="password" value="${api.password}"/>
+    </bean-->
+    <!-- THE FOLLOWING MOBILEBOOKING CLASS MOCKS THE RESULTS OF REAL WS-CALLS -->
+    <bean id="mobileBooking" class="won.transport.taxi.bot.client.MobileBookingMock">
     </bean>
 
     <bean id="needProducer" class="won.bot.framework.component.needproducer.impl.DirectoryBasedNeedProducer">
         <property name="directory" value="${taxibot.bot.factoryneedfolder}"/>
-        <property name="filenameFilterRegex" value="^[^\.].*\.trig"/>
+        <property name="filenameFilterRegex" value="^[^\.].*\.ttl"/>
         <property name="repeat" value="false"/>
         <property name="fileBasedNeedProducer">
-            <bean class="won.bot.framework.component.needproducer.impl.TrigFileNeedProducer"/>
+            <bean class="won.bot.framework.component.needproducer.impl.TurtleFileNeedProducer"/>
         </property>
     </bean>
 </beans>
