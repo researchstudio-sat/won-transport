@@ -7,10 +7,10 @@ import won.transport.taxi.bot.client.entity.Result;
 import won.transport.taxi.bot.entity.ParseableResult;
 
 public class MobileBookingTest {
-    private MobileBooking mobileBooking;
+    private MobileBookingImpl mobileBooking;
 
     public void init() throws Exception {
-        mobileBooking = new MobileBooking();
+        mobileBooking = new MobileBookingImpl();
         mobileBooking.setServerUrl(System.getProperty("api.serverUrl"));
         mobileBooking.setPassword(System.getProperty("api.password"));
         mobileBooking.setUsername(System.getProperty("api.username"));
@@ -18,7 +18,7 @@ public class MobileBookingTest {
     }
 
     public void initUnauthorized() throws Exception {
-        mobileBooking = new MobileBooking();
+        mobileBooking = new MobileBookingImpl();
         mobileBooking.setServerUrl(System.getProperty("api.serverUrl"));
         mobileBooking.setPassword(System.getProperty("api.password"));
         mobileBooking.setUsername(System.getProperty("api.username")+"bla");
@@ -26,7 +26,7 @@ public class MobileBookingTest {
     }
 
     public void initWrongURL() throws Exception {
-        mobileBooking = new MobileBooking();
+        mobileBooking = new MobileBookingImpl();
         mobileBooking.setServerUrl(System.getProperty("api.serverUrlWrong"));
         mobileBooking.setPassword(System.getProperty("api.password"));
         mobileBooking.setUsername(System.getProperty("api.username"));
@@ -250,7 +250,7 @@ public class MobileBookingTest {
     public void testGetFleetRadar_OK() throws Exception {
         init();
 
-        Area area = new Area(16.0, 16.5, 48.0, 48.6);
+        Area area = new Area(0.0, 25.0, 0.0, 50.0);
 
         Result getFleetRadarResult = mobileBooking.getFleetRadar(area);
 
