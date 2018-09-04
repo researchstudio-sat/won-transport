@@ -68,6 +68,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
 
             if(!checkOrderResponse.isError()) {
                 final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
+                //final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, WonRdfUtils.MessageUtils.textMessage("This is a proposal Message"));
 
                 ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
                     @Override
@@ -80,6 +81,11 @@ public class PreconditionMetAction extends BaseEventBotAction{
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, agreementMessage));
                         }else{
                             logger.error("FAILURERESPONSEEVENT FOR PROPOSAL PAYLOAD");
+                            analyzeBehaviour.removePreconditionMetPending(preconditionUri);
+                            analyzeBehaviour.addPreconditionMetError(preconditionUri);
+
+                            Model errorMessage = WonRdfUtils.MessageUtils.textMessage("Extracted Payload did not go through.\n\n type 'recheck' to check again");
+                            ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
                         }
                     }
                 }));
