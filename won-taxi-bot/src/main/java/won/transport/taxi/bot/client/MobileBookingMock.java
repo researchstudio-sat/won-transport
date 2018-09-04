@@ -30,7 +30,7 @@ public class MobileBookingMock implements MobileBooking{
 
         List<Parameter> parameterList = new ArrayList<>();
         parameterList.add(new ArrivalMinutes(10));
-        parameterList.add(new DisplayText("This is not mocked checkorder-result"));
+        parameterList.add(new DisplayText("This is a mocked checkorder-result"));
         parameterList.add(p);
 
         Result result = new Result();
