@@ -10,12 +10,15 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-cp -pf $DIR/../won-taxi-bot/target/taxi-bot.jar $DIR/taxi-bot/taxi-bot.jar
+export DOCKER_HOST=satvm01.researchstudio.at:2376
+export DOCKER_TLS_VERIFY=1
 
-rm -rf $DIR/taxi-bot/conf
-cp -rfp $DIR/../conf $DIR/taxi-bot/conf
+if [ -z "$DOCKER_CERT_PATH" ]; then
+    (>&2 echo "You need to set DOCKER_CERT_PATH to authenticate with the docker daemon!")
+    exit 1
+fi
 
-rm -rf $DIR/taxi-bot/factory-needs/
-cp -rfp $DIR/../won-taxi-bot/src/main/resources/FactoryNeeds $DIR/taxi-bot/factory-needs
+export WON_NODE_BASE=https://node.matchat.org
+export API_USERNAME=asdf #we are currently mocking the api so we only need the username
 
-docker-compose -f $DIR/docker-compose.yml -p "won_transport" up -d --build
+$DIR/deploy.sh
