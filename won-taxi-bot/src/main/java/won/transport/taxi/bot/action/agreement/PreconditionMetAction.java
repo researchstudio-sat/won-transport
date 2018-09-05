@@ -84,18 +84,18 @@ public class PreconditionMetAction extends BaseEventBotAction{
                             analyzeBehaviour.removePreconditionMetPending(preconditionUri);
                             analyzeBehaviour.addPreconditionMetError(preconditionUri);
 
-                            Model errorMessage = WonRdfUtils.MessageUtils.textMessage("Extracted Payload did not go through.\n\n type 'recheck' to check again");
+                            Model errorMessage = WonRdfUtils.MessageUtils.textMessage("Extracted Payload did not go through.\n\ntype 'recheck' to check again");
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
                         }
                     }
                 }));
 
                 ctx.getEventBus().publish(connectionMessageCommandEvent);
-            }else {
+            } else {
                 analyzeBehaviour.removePreconditionMetPending(preconditionUri);
                 analyzeBehaviour.addPreconditionMetError(preconditionUri);
 
-                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString() + "\n\n type 'recheck' to check again");
+                Model errorMessage = WonRdfUtils.MessageUtils.textMessage(checkOrderResponse.toString() + "\n\ntype 'recheck' to check again");
                 ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, errorMessage));
             }
         }
