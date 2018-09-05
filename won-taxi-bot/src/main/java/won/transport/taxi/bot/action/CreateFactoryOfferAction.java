@@ -80,7 +80,7 @@ public class CreateFactoryOfferAction extends AbstractCreateNeedAction {
         Model factoryOfferModel = createFactoryOfferFromTemplate(ctx, factoryHintEvent.getFactoryNeedURI(), factoryHintEvent.getRequesterURI());
         URI factoryOfferURI = WonRdfUtils.NeedUtils.getNeedURI(factoryOfferModel);
         Model shapesModel = createShapesModelFromTemplate(ctx, factoryHintEvent.getFactoryNeedURI());
-
+        //TODO: ADD BOT ALREADY PROCESSED THE NEEDURI FOR THIS FACTORY OFFER
         logger.debug("creating factoryoffer on won node {} with content {} ", wonNodeUri, StringUtils.abbreviate(RdfUtils.toString(factoryOfferModel), 150));
 
         WonMessage createNeedMessage = createWonMessage(ctx.getWonNodeInformationService(), factoryOfferURI, wonNodeUri, factoryOfferModel, shapesModel);
