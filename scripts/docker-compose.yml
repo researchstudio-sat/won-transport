@@ -1,0 +1,44 @@
+version: '3'
+services:
+  taxi_bot:
+    build: ./taxi-bot
+    image: webofneeds/taxi_bot
+    environment:
+      - "api.serverUrl=${API_SERVER_URL}"
+      - "api.username=${API_USERNAME}"
+      - "api.password=${API_PASSWORD}"
+      - "uri.node.default=${WON_NODE_BASE}/won/resource"
+      - "won.node.uris=${WON_NODE_BASE}/won/resource"
+      - "uri.prefix.owner=${WON_NODE_BASE}/taxi_bot"  # set this for the trust store alias
+      - "taxibot.name=Taxi Service Bot"
+      - "taxibot.bot.factoryneedfolder=/usr/src/factory-needs"
+
+      # keystore properties
+      - "keystore.password"
+      - "keystore.location=/usr/src/certs/keystore.jks"
+
+      # truststore properties
+      - "truststore.password"
+      - "truststore.location=/usr/src/certs/truststore.jks"
+
+      # mongodb config
+      - "botContext.impl=mongoBotContext"
+      - "botContext.mongodb.user=taxi_bot"
+      - "botContext.mongodb.pass=taxi_bot"
+      - "botContext.mongodb.host=mongodb"
+      - "botContext.mongodb.port=27017"
+      - "botContext.mongodb.database=taxi_bot"
+    depends_on:
+      - mongodb
+    volumes:
+      - "certs:/usr/src/certs"
+
+  mongodb:
+    image: bitnami/mongodb
+    environment:
+      - "MONGODB_USERNAME=taxi_bot"
+      - "MONGODB_PASSWORD=taxi_bot"
+      - "MONGODB_DATABASE=taxi_bot"
+
+volumes:
+  certs:
