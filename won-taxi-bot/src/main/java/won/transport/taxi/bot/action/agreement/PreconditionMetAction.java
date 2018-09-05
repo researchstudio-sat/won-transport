@@ -67,16 +67,18 @@ public class PreconditionMetAction extends BaseEventBotAction{
             final String preconditionUri = ((PreconditionEvent) event).getPreconditionUri();
 
             if(!checkOrderResponse.isError()) {
-                final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
-                //final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, WonRdfUtils.MessageUtils.textMessage("This is a proposal Message"));
+                //TODO: THE LINE BELOW RESULTS IN SENDING AN INVALID MESSAGE, UNTIL THE CORRECT INSTANCE MODEL IS SENT WE JUST SEND A TEXTMESSAGE AND PROPOSE IT
+                //final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
+
+                Model messageToPropose = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ":\n\n" + checkOrderResponse);
+                final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, messageToPropose);
 
                 ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {
                     @Override
                     protected void doRun(Event event, EventListener executingListener) throws Exception {
                         ConnectionMessageCommandResultEvent connectionMessageCommandResultEvent = (ConnectionMessageCommandResultEvent) event;
                         if(connectionMessageCommandResultEvent.isSuccess()){
-                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ":\n\n"
-                                    + checkOrderResponse + "\n\n....Do you want to confirm the taxi order? Then accept the proposal");
+                            Model agreementMessage = WonRdfUtils.MessageUtils.textMessage("Do you want to confirm the taxi order? Then accept the proposal");
                             WonRdfUtils.MessageUtils.addProposes(agreementMessage, ((ConnectionMessageCommandSuccessEvent) connectionMessageCommandResultEvent).getWonMessage().getMessageURI());
                             ctx.getEventBus().publish(new ConnectionMessageCommandEvent(connection, agreementMessage));
                         }else{
