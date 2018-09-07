@@ -34,11 +34,11 @@ services:
       - "certs:/usr/src/certs"
 
   mongodb:
-    image: bitnami/mongodb
+    image: tutum/mongodb:3.2
     environment:
-      - "MONGODB_USERNAME=taxi_bot"
-      - "MONGODB_PASSWORD=taxi_bot"
-      - "MONGODB_DATABASE=taxi_bot"
+    - "MONGODB_USER=taxi_bot"
+    - "MONGODB_DATABASE=taxi_bot"
+    - "MONGODB_PASS=taxi_bot"
 
 volumes:
   certs:
