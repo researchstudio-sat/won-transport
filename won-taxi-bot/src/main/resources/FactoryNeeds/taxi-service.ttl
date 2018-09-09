@@ -4,9 +4,9 @@
 @prefix oln-test:   <http://sat.researchstudio.at/oln/test/> .
 oln-test:taxiService1
   a won:Need;
+  a s:TaxiService;
   won:hasFlag won:NoHintForCounterpart;
   won:is [
-    a s:TaxiService;
     dc:title "Taxi in Wien"@de;
     dc:description "Biete Taxidienstleistungen im Raum Wien und Umgebung"@de;
     dc:title "Taxi in Vienna"@en;
