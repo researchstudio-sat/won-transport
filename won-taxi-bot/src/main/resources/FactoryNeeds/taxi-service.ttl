@@ -4,6 +4,7 @@
 @prefix oln-test:   <http://sat.researchstudio.at/oln/test/> .
 oln-test:taxiService1
   a won:Need;
+  a s:TaxiService;
   won:hasFlag won:NoHintForCounterpart;
   won:is [
     dc:title "Taxi in Wien"@de;
@@ -26,9 +27,10 @@ oln-test:taxiService1
         ]
      ] ;
      s:geo [
-       a s:GeoCoordinates ;
-       s:latitude   "48.209269" ;
-       s:longitude  "16.370831"
+        a s:GeoCoordinates ;
+        won:geoSpatial  "48.220210#16.371216"^^<http://www.bigdata.com/rdf/geospatial/literals/v1#lat-lon> ;
+        s:latitude      "48.220210" ;
+        s:longitude     "16.371216"
      ] ;
      s:name              "Wien, Österreich"@de;
      s:name              "Vienna, Austria"@en
