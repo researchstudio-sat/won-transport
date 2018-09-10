@@ -62,6 +62,8 @@ public class PreconditionMetAction extends BaseEventBotAction{
 
             DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(preconditionEventPayload);
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(preconditionEventPayload);
+            String departureName = InformationExtractor.getDepartureName(preconditionEventPayload);
+            String destinationName = InformationExtractor.getDestinationName(preconditionEventPayload);
 
             final ParseableResult checkOrderResponse = new ParseableResult(botContextWrapper.getMobileBooking().checkOrder(departureAddress, destinationAddress));
             final String preconditionUri = ((PreconditionEvent) event).getPreconditionUri();
@@ -70,7 +72,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
                 //TODO: THE LINE BELOW RESULTS IN SENDING AN INVALID MESSAGE, UNTIL THE CORRECT INSTANCE MODEL IS SENT WE JUST SEND A TEXTMESSAGE AND PROPOSE IT
                 //final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
 
-                Model messageToPropose = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ":\n\n" + checkOrderResponse);
+                Model messageToPropose = WonRdfUtils.MessageUtils.textMessage("Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':\n\n" + checkOrderResponse);
                 final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, messageToPropose);
 
                 ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {

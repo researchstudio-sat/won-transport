@@ -76,6 +76,8 @@ public class ProposalReceivedAction extends BaseEventBotAction {
 
                     DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(proposalModel);
                     DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(proposalModel);
+                    String destinationName = InformationExtractor.getDestinationName(proposalModel);
+                    String departureName = InformationExtractor.getDepartureName(proposalModel);
 
                     final ParseableResult createOrderResponse = new ParseableResult(botContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress));
 
@@ -83,8 +85,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                         rejectMsg = createOrderResponse.toString();
                     }else {
                         final String orderId = createOrderResponse.getOrderId().getValue();
-                        Model messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
-                                + "Has the Order: '"+createOrderResponse + "....Get into the Taxi when it arrives!");
+                        Model messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':\n\nHas the Order: '"+createOrderResponse + "....Get into the Taxi when it arrives!");
 
                         WonRdfUtils.MessageUtils.addAccepts(messageModel, proposalUri);
                         ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, messageModel);
