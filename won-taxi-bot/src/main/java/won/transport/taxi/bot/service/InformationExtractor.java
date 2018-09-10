@@ -26,6 +26,7 @@ public class InformationExtractor {
     private static final String toLocationRetrievalQuery;
     private static final String LAT = "lat";
     private static final String LON = "lon";
+    private static final String NAME = "name";
 
 
     static {
@@ -80,6 +81,50 @@ public class InformationExtractor {
                 double lat = solution.getLiteral(LAT).getDouble();
                 double lon = solution.getLiteral(LON).getDouble();
                 return new DestinationAddress(lon, lat);
+            }
+        }
+        return null;
+    }
+
+    public static String getDestinationName(GoalInstantiationResult payload) {
+        if(payload != null) {
+            QuerySolution solution = executeQuery(toLocationRetrievalQuery, payload.getInstanceModel());
+
+            if (solution != null) {
+                return solution.getLiteral(NAME).getString();
+            }
+        }
+        return null;
+    }
+
+    public static String getDepartureName(GoalInstantiationResult payload) {
+        if(payload != null) {
+            QuerySolution solution = executeQuery(fromLocationRetrievalQuery, payload.getInstanceModel());
+
+            if (solution != null) {
+                return solution.getLiteral(NAME).getString();
+            }
+        }
+        return null;
+    }
+
+    public static String getDestinationName(Model payload){
+        if(payload != null && !payload.isEmpty()) {
+            QuerySolution solution = executeQuery(toLocationRetrievalQuery, payload);
+
+            if (solution != null) {
+                return solution.getLiteral(NAME).getString();
+            }
+        }
+        return null;
+    }
+
+    public static String getDepartureName(Model payload){
+        if(payload != null && !payload.isEmpty()) {
+            QuerySolution solution = executeQuery(fromLocationRetrievalQuery, payload);
+
+            if (solution != null) {
+                return solution.getLiteral(NAME).getString();
             }
         }
         return null;
