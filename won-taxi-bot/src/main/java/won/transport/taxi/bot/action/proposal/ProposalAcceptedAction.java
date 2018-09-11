@@ -50,6 +50,8 @@ public class ProposalAcceptedAction extends BaseEventBotAction {
 
             DepartureAddress departureAddress = InformationExtractor.getDepartureAddress(proposalAcceptedEvent.getPayload());
             DestinationAddress destinationAddress = InformationExtractor.getDestinationAddress(proposalAcceptedEvent.getPayload());
+            String departureName = InformationExtractor.getDepartureName(proposalAcceptedEvent.getPayload());
+            String destinationName = InformationExtractor.getDestinationName(proposalAcceptedEvent.getPayload());
 
             ParseableResult createOrderResult = new ParseableResult(taxiBotContextWrapper.getMobileBooking().createOrder(departureAddress, destinationAddress));
             String orderId = "";
@@ -61,9 +63,15 @@ public class ProposalAcceptedAction extends BaseEventBotAction {
                 WonRdfUtils.MessageUtils.addProposesToCancel(messageModel, agreementUri);
             }else {
                 orderId = createOrderResult.getOrderId().getValue();
-                messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from " + departureAddress + " to " + destinationAddress + ": "
-                        + "Your Order is: " + createOrderResult
-                        +"\n\n....Get into the Taxi when it arrives!");
+                String rideText = "Your Order has been placed!";
+
+                if((departureName != null || departureAddress != null) && (destinationName != null || destinationAddress != null)) {
+                    rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':";
+                }
+
+                messageModel = WonRdfUtils.MessageUtils.textMessage(rideText +
+                        "\n\nYour Order is: " + createOrderResult +
+                        "\n\n....Get into the Taxi when it arrives!");
                 taxiBotContextWrapper.addOfferIdForAgreementURI(agreementUri, orderId);
             }
 

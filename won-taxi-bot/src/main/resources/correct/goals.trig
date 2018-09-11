@@ -48,6 +48,11 @@ ex2:p2g-shapes {
               sh:maxCount 1 ;
           ] ;
           sh:property [
+              sh:path s:name ;
+              sh:minCount 0 ;
+              sh:maxCount 1 ;
+          ] ;
+          sh:property [
                       sh:path rdf:type;
                       sh:minCount 1;
                   ];
