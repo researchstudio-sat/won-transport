@@ -33,7 +33,7 @@ oln-test:taxiService1
         s:latitude      "48.220210" ;
         s:longitude     "16.371216"
      ] ;
-     s:name              "Wien, Österreich"@de;
+     s:name              "Wien, Ã–sterreich"@de;
      s:name              "Vienna, Austria"@en
    ]
   ];
