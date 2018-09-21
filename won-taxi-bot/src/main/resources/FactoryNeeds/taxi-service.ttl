@@ -6,6 +6,7 @@ oln-test:taxiService1
   a won:Need;
   a s:TaxiService;
   won:hasFlag won:NoHintForCounterpart;
+  won:hasQuery "PREFIX won: <http://purl.org/webofneeds/model#>\nPREFIX s: <http://schema.org/>\nPREFIX geo: <http://www.bigdata.com/rdf/geospatial#>\nPREFIX geoliteral: <http://www.bigdata.com/rdf/geospatial/literals/v1#>\nSELECT DISTINCT ?result WHERE {\n  ?result <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> won:Need;\n          won:isInState won:Active.\n  ?result won:seeks ?seeks.\n  ?seeks (won:travelAction/s:fromLocation) ?fromLocation.\n  ?fromLocation s:geo ?fromLocation_geo.\n  SERVICE geo:search {\n    ?fromLocation_geo geo:search \"inCircle\".\n    ?fromLocation_geo geo:searchDatatype geoliteral:lat-lon.\n    ?fromLocation_geo geo:predicate won:geoSpatial.\n    ?fromLocation_geo geo:spatialCircleCenter \"48.220210#16.371216\".\n    ?fromLocation_geo geo:spatialCircleRadius \"10\".\n    ?fromLocation_geo geo:distanceValue ?fromLocation_geoDistance.}} ORDER BY (?fromLocation_geoDistance)" ;
   won:is [
     dc:title "Taxi in Wien"@de;
     dc:description "Biete Taxidienstleistungen im Raum Wien und Umgebung"@de;
@@ -32,56 +33,8 @@ oln-test:taxiService1
         s:latitude      "48.220210" ;
         s:longitude     "16.371216"
      ] ;
-     s:name              "Wien, Ã–sterreich"@de;
+     s:name              "Wien, Österreich"@de;
      s:name              "Vienna, Austria"@en
    ]
-  ];
-  won:seeks [
-    won:seeks [
-      dc:title "Taxi";
-      won:hasLocation [
-        s:geo [
-          a s:GeoCoordinates ;
-          s:latitude   "48.209269" ;
-          s:longitude  "16.370831"
-        ] ;
-        s:name "Wien"
-      ];
-    ]
-  ];
-  won:seeks [
-    won:seeks [
-      dc:description "Taxi";
-      won:hasLocation [
-        s:geo [
-          a s:GeoCoordinates ;
-          s:latitude   "48.209269" ;
-          s:longitude  "16.370831"
-        ] ;
-        s:name "Wien"
-      ];
-    ]
-  ];
-  won:seeks [
-    won:seeks [
-      won:hasTag "Taxi";
-      won:hasLocation [
-        s:geo [
-          a s:GeoCoordinates ;
-          s:latitude   "48.209269" ;
-          s:longitude  "16.370831"
-        ] ;
-        s:name "Wien"
-      ];
-    ];
-  won:seeks [
-    won:seeks [
-      dc:title "Taxi Wien"
-    ]
-  ];
-  won:seeks [
-    won:seeks [
-      dc:description "Taxi Wien"
-    ]
   ];
 ].
