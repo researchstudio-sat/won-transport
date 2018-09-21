@@ -36,5 +36,5 @@ oln-test:taxiService1
      s:name              "Wien, Österreich"@de;
      s:name              "Vienna, Austria"@en
    ]
-  ];
-].
+  ] .
+
