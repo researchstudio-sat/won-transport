@@ -71,8 +71,15 @@ public class PreconditionMetAction extends BaseEventBotAction{
             if(!checkOrderResponse.isError()) {
                 //TODO: THE LINE BELOW RESULTS IN SENDING AN INVALID MESSAGE, UNTIL THE CORRECT INSTANCE MODEL IS SENT WE JUST SEND A TEXTMESSAGE AND PROPOSE IT
                 //final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, preconditionEventPayload.getInstanceModel());
+                String rideText = "Your Order has been placed!";
 
-                Model messageToPropose = WonRdfUtils.MessageUtils.textMessage("Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':\n\n" + checkOrderResponse);
+                if((departureName != null || departureAddress != null) && (destinationName != null || destinationAddress != null)) {
+                    rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':";
+                } else if ((departureName != null || departureAddress != null)) {
+                    rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "':";
+                }
+
+                Model messageToPropose = WonRdfUtils.MessageUtils.textMessage(rideText + "\n\n" + checkOrderResponse);
                 final ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(connection, messageToPropose);
 
                 ctx.getEventBus().subscribe(ConnectionMessageCommandResultEvent.class, new ActionOnFirstEventListener(ctx, new CommandResultFilter(connectionMessageCommandEvent), new BaseEventBotAction(ctx) {

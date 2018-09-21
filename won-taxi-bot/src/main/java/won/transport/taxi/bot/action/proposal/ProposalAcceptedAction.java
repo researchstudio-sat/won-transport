@@ -67,6 +67,8 @@ public class ProposalAcceptedAction extends BaseEventBotAction {
 
                 if((departureName != null || departureAddress != null) && (destinationName != null || destinationAddress != null)) {
                     rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':";
+                } else if ((departureName != null || departureAddress != null)) {
+                    rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "':";
                 }
 
                 messageModel = WonRdfUtils.MessageUtils.textMessage(rideText +

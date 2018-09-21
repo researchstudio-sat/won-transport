@@ -85,7 +85,16 @@ public class ProposalReceivedAction extends BaseEventBotAction {
                         rejectMsg = createOrderResponse.toString();
                     }else {
                         final String orderId = createOrderResponse.getOrderId().getValue();
-                        Model messageModel = WonRdfUtils.MessageUtils.textMessage("Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':\n\nHas the Order: '"+createOrderResponse + "....Get into the Taxi when it arrives!");
+
+                        String rideText = "Your Order has been placed!";
+
+                        if((departureName != null || departureAddress != null) && (destinationName != null || destinationAddress != null)) {
+                            rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "' to '" + ((destinationName != null)? destinationName : destinationAddress) + "':";
+                        } else if ((departureName != null || departureAddress != null)) {
+                            rideText = "Ride from '" + ((departureName != null) ? departureName : destinationAddress) + "':";
+                        }
+
+                        Model messageModel = WonRdfUtils.MessageUtils.textMessage(rideText + "\n\nHas the Order: '"+createOrderResponse + "....Get into the Taxi when it arrives!");
 
                         WonRdfUtils.MessageUtils.addAccepts(messageModel, proposalUri);
                         ConnectionMessageCommandEvent connectionMessageCommandEvent = new ConnectionMessageCommandEvent(con, messageModel);
