@@ -20,7 +20,7 @@ import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
-import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
+import won.bot.framework.eventbot.event.BaseAtomAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionMetEvent;
@@ -54,7 +54,7 @@ public class PreconditionMetAction extends BaseEventBotAction{
         EventListenerContext ctx = getEventListenerContext();
 
         if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof PreconditionMetEvent) {
-            Connection connection = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
+            Connection connection = ((BaseAtomAndConnectionSpecificEvent) event).getCon();
 
             TaxiBotContextWrapper botContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 

@@ -19,6 +19,6 @@ if [ -z "$DOCKER_CERT_PATH" ]; then
 fi
 
 export WON_NODE_BASE=https://node.matchat.org
-export API_USERNAME=asdf #we are currently mocking the api so we only need the username
+export API_USERNAME=asdf #we are currently mocking the api so we only atom the username
 
 $DIR/deploy.sh

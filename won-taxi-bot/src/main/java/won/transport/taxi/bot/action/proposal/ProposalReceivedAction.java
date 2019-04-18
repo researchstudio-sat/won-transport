@@ -6,7 +6,7 @@ import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
-import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
+import won.bot.framework.eventbot.event.BaseAtomAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationRequestedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalEvent;
@@ -53,7 +53,7 @@ public class ProposalReceivedAction extends BaseEventBotAction {
             LinkedDataSource linkedDataSource = ctx.getLinkedDataSource();
             String rejectMsg;
 
-            Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
+            Connection con = ((BaseAtomAndConnectionSpecificEvent) event).getCon();
             ProposalEvent proposalEvent = (ProposalEvent) event;
             URI proposalUri = proposalEvent.getProposalUri();
 

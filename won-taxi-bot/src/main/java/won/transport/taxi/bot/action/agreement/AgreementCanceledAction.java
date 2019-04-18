@@ -20,13 +20,13 @@ import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
-import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
+import won.bot.framework.eventbot.event.BaseAtomAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationAcceptedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementCancellationRequestedEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.agreement.AgreementEvent;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherAtomEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
@@ -47,10 +47,10 @@ public class AgreementCanceledAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof AgreementCancellationRequestedEvent || event instanceof AgreementCancellationAcceptedEvent|| event instanceof CloseFromOtherNeedEvent)) { //TODO: CLOSE FROM OTHER NEED IS NOT REALLY COOL TO DO HERE
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof AgreementCancellationRequestedEvent || event instanceof AgreementCancellationAcceptedEvent|| event instanceof CloseFromOtherAtomEvent)) { //TODO: CLOSE FROM OTHER ATOM IS NOT REALLY COOL TO DO HERE
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
-            Connection connection = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
+            Connection connection = ((BaseAtomAndConnectionSpecificEvent) event).getCon();
 
             //RETRIEVE ORDER ID FROM CON URI FROM FACTORYBOTCONTEXTWRAPPER
             URI agreementURI = event instanceof AgreementEvent ? ((AgreementEvent) event).getAgreementUri() : null;
@@ -89,10 +89,10 @@ public class AgreementCanceledAction extends BaseEventBotAction {
                     }
                     getEventListenerContext().getEventBus().publish(new ConnectionMessageCommandEvent(connection, messageModel));
                 } else {
-                    logger.debug("No Offer present for agreementURI:" + agreementURI + ", no need to cancel anything");
+                    logger.debug("No Offer present for agreementURI:" + agreementURI + ", no atom to cancel anything");
                 }
             }else{
-                logger.debug("No agreement present, no need to cancel anything");
+                logger.debug("No agreement present, no atom to cancel anything");
             }
         }
     }

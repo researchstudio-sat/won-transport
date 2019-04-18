@@ -35,12 +35,12 @@ public class TestTransportOntology
   public static void main(String... args) throws FileNotFoundException {
 
     OntModel individuals = ModelFactory.createOntologyModel();
-    String senderUri = "https://node.matchat.org/won/resource/need/sender-123";
-    String recipientUri = "https://node.matchat.org/won/resource/need/recipient-234";
-    String transporterUri = "https://node.matchat.org/won/resource/need/transporter-345";
-    String consignmentUri = "https://node.matchat.org/won/resource/need/consigment-456";
+    String senderUri = "https://node.matchat.org/won/resource/atom/sender-123";
+    String recipientUri = "https://node.matchat.org/won/resource/atom/recipient-234";
+    String transporterUri = "https://node.matchat.org/won/resource/atom/transporter-345";
+    String consignmentUri = "https://node.matchat.org/won/resource/atom/consigment-456";
 
-    individuals.setNsPrefix("need","https://node.matchat.org/won/resource/need/");
+    individuals.setNsPrefix("atom","https://node.matchat.org/won/resource/atom/");
 
     individuals.setNsPrefix("lc", Logico.NS);
     individuals.setNsPrefix("ls", Logiserv.NS);

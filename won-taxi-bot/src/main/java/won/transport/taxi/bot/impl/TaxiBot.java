@@ -19,7 +19,7 @@ package won.transport.taxi.bot.impl;
 import won.bot.framework.bot.base.FactoryBot;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.impl.MultipleActions;
-import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateNeedCommandAction;
+import won.bot.framework.eventbot.action.impl.wonmessage.execCommand.ExecuteDeactivateAtomCommandAction;
 import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 
 import won.bot.framework.eventbot.behaviour.BotBehaviour;
@@ -32,8 +32,8 @@ import won.bot.framework.eventbot.event.impl.analyzation.precondition.Preconditi
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.proposal.ProposalReceivedEvent;
 import won.bot.framework.eventbot.event.impl.factory.FactoryHintEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherNeedEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.CloseFromOtherAtomEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
 import won.bot.framework.eventbot.listener.impl.ActionOnEventListener;
 import won.transport.taxi.bot.action.*;
 import won.transport.taxi.bot.action.proposal.ProposalAcceptedAction;
@@ -126,20 +126,20 @@ public class TaxiBot extends FactoryBot {
             )
         );
 
-        bus.subscribe(CloseFromOtherNeedEvent.class,
+        bus.subscribe(CloseFromOtherAtomEvent.class,
             new ActionOnEventListener(
                 ctx,
                 "FactoryOfferClosed",
                 new MultipleActions(
                     ctx,
-                    new ExecuteDeactivateNeedCommandAction(ctx),
+                    new ExecuteDeactivateAtomCommandAction(ctx),
                     new AgreementCanceledAction(ctx, analyzeBehaviour)
                 )
             )
         );
 
         //This event is for control purposes
-        bus.subscribe(MessageFromOtherNeedEvent.class,
+        bus.subscribe(MessageFromOtherAtomEvent.class,
             new ActionOnEventListener(
                 ctx,
                 new ControlMessageAction(ctx, analyzeBehaviour)
