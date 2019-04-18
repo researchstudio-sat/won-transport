@@ -15,11 +15,11 @@ ENV TAXI_BOT=won.transport.taxi.bot.app.TaxiBotApp
 # add the jar and the conf directory
 ADD ./taxi-bot.jar /usr/src/
 ADD ./conf ${WON_CONFIG_DIR}
-ADD ./factory-needs /usr/src/factory-needs
+ADD ./factory-atoms /usr/src/factory-atoms
 
 # add certificates directory
 RUN mkdir -p /usr/src/certs
-RUN mkdir -p /usr/src/factory-needs
+RUN mkdir -p /usr/src/factory-atoms
 
 
 # start echo bot

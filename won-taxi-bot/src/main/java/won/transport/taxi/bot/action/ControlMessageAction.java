@@ -9,7 +9,7 @@ import won.bot.framework.eventbot.behaviour.AnalyzeBehaviour;
 import won.bot.framework.eventbot.bus.EventBus;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.command.connectionmessage.ConnectionMessageCommandEvent;
-import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherNeedEvent;
+import won.bot.framework.eventbot.event.impl.wonmessage.MessageFromOtherAtomEvent;
 import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.agreement.AgreementProtocolState;
 import won.protocol.model.Connection;
@@ -41,18 +41,18 @@ public class ControlMessageAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper &&  event instanceof MessageFromOtherNeedEvent){
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper &&  event instanceof MessageFromOtherAtomEvent){
             EventBus eventBus = ctx.getEventBus();
-            Connection con = ((MessageFromOtherNeedEvent) event).getCon();
+            Connection con = ((MessageFromOtherAtomEvent) event).getCon();
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
-            MessageFromOtherNeedEvent messageFromOtherNeedEvent = (MessageFromOtherNeedEvent) event;
+            MessageFromOtherAtomEvent messageFromOtherAtomEvent = (MessageFromOtherAtomEvent) event;
 
-            String textMessage = WonRdfUtils.MessageUtils.getTextMessage(messageFromOtherNeedEvent.getWonMessage());
+            String textMessage = WonRdfUtils.MessageUtils.getTextMessage(messageFromOtherAtomEvent.getWonMessage());
 
             if ("status".equals(textMessage)) {
                 publishAnalyzingMessage(con);
 
-                Dataset fullConversationDataset = WonLinkedDataUtils.getConversationAndNeedsDataset(con.getConnectionURI(), ctx.getLinkedDataSource());
+                Dataset fullConversationDataset = WonLinkedDataUtils.getConversationAndAtomsDataset(con.getConnectionURI(), ctx.getLinkedDataSource());
                 Dataset presentAgreements = AgreementProtocolState.of(fullConversationDataset).getAgreements();
 
                 if(presentAgreements.isEmpty()){

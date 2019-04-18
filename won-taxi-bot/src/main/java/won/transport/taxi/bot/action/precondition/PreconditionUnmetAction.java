@@ -19,7 +19,7 @@ package won.transport.taxi.bot.action.precondition;
 import org.apache.jena.rdf.model.Model;
 import won.bot.framework.eventbot.EventListenerContext;
 import won.bot.framework.eventbot.action.BaseEventBotAction;
-import won.bot.framework.eventbot.event.BaseNeedAndConnectionSpecificEvent;
+import won.bot.framework.eventbot.event.BaseAtomAndConnectionSpecificEvent;
 import won.bot.framework.eventbot.event.Event;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionEvent;
 import won.bot.framework.eventbot.event.impl.analyzation.precondition.PreconditionUnmetEvent;
@@ -44,7 +44,7 @@ public class PreconditionUnmetAction extends BaseEventBotAction {
         EventListenerContext ctx = getEventListenerContext();
 
         if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && event instanceof PreconditionUnmetEvent) {
-            Connection con = ((BaseNeedAndConnectionSpecificEvent) event).getCon();
+            Connection con = ((BaseAtomAndConnectionSpecificEvent) event).getCon();
 
             GoalInstantiationResult preconditionEventPayload = ((PreconditionEvent) event).getPayload();
 
