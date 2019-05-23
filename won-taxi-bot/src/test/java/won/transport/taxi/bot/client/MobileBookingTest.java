@@ -1,11 +1,22 @@
 package won.transport.taxi.bot.client;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
-import won.transport.taxi.bot.client.entity.Parameter.*;
+
 import won.transport.taxi.bot.client.entity.Result;
+import won.transport.taxi.bot.client.entity.Parameter.Area;
+import won.transport.taxi.bot.client.entity.Parameter.DepartureAddress;
+import won.transport.taxi.bot.client.entity.Parameter.DestinationAddress;
+import won.transport.taxi.bot.client.entity.Parameter.OrderId;
+import won.transport.taxi.bot.client.entity.Parameter.Parameter;
+import won.transport.taxi.bot.client.entity.Parameter.PostCode;
+import won.transport.taxi.bot.client.entity.Parameter.Price;
+import won.transport.taxi.bot.client.entity.Parameter.ServiceList;
+import won.transport.taxi.bot.client.entity.Parameter.State;
 import won.transport.taxi.bot.entity.ParseableResult;
 
+@Ignore
 public class MobileBookingTest {
     private MobileBookingImpl mobileBooking;
 

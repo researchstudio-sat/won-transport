@@ -15,6 +15,7 @@
  */
 
 package won.transport.taxi.bot.action;
+import won.protocol.vocabulary.WONMATCH;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.Dataset;
@@ -35,7 +36,6 @@ import won.bot.framework.eventbot.listener.EventListener;
 import won.protocol.exception.WonMessageBuilderException;
 import won.protocol.message.WonMessage;
 import won.protocol.message.WonMessageBuilder;
-import won.protocol.model.AtomContentPropertyType;
 import won.protocol.model.AtomGraphType;
 import won.protocol.service.WonNodeInformationService;
 import won.protocol.util.DefaultAtomModelWrapper;
@@ -120,14 +120,16 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
 
         DefaultAtomModelWrapper atomModelWrapper = new DefaultAtomModelWrapper(ctx.getWonNodeInformationService().generateAtomURI(ctx.getNodeURISource().getNodeURI()).toString());
 
-        atomModelWrapper.setTitle(AtomContentPropertyType.IS, connectTitle);
+        atomModelWrapper.setTitle(connectTitle);
         //atomModelWrapper.setDescription(AtomContentPropertyType.IS, "This is a automatically created atom by the TaxiBot");
-        atomModelWrapper.addFlag(WON.NoHintForCounterpart);
-        atomModelWrapper.addFlag(WON.NoHintForMe);
+        atomModelWrapper.addFlag(WONMATCH.NoHintForCounterpart);
+        atomModelWrapper.addFlag(WONMATCH.NoHintForMe);
         atomModelWrapper.setShapesGraphReference(STUB_SHAPES_URI);
 
-        for(URI socket : sockets){
-            atomModelWrapper.addSocketUri(socket.toString());
+        int i = 1;
+        for (URI socket : sockets) {
+            atomModelWrapper.addSocket("#socket" + i, socket.toString());
+            i++;
         }
 
         return atomModelWrapper.copyAtomModel(AtomGraphType.ATOM);
@@ -147,8 +149,8 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
 
         AtomModelWrapper atomModelWrapper = new AtomModelWrapper(atomModel, null);
 
-        atomModelWrapper.addFlag(WON.NoHintForMe);
-        atomModelWrapper.addFlag(WON.NoHintForCounterpart);
+        atomModelWrapper.addFlag(WONMATCH.NoHintForMe);
+        atomModelWrapper.addFlag(WONMATCH.NoHintForCounterpart);
 
         RdfUtils.replaceBaseURI(atomModel, atomURI.toString());
 

@@ -1,3 +1,4 @@
+@prefix con: <https://w3id.org/won/content#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix s:     <http://schema.org/> .
 @prefix sh:    <http://www.w3.org/ns/shacl#> .
@@ -22,12 +23,12 @@ ex2:p2g-shapes {
             sh:closed             false ;
             sh:ignoredProperties  ( rdf:type ) ;
             sh:property [
-                            sh:path (won:boundingBox won:southEastCorner);
+                            sh:path (con:boundingBox con:southEastCorner);
                             sh:class s:GeoCoordinates ;
                             sh:minCount 0;
                         ] ;
             sh:property [
-                            sh:path (won:boundingBox won:northWestCorner);
+                            sh:path (con:boundingBox con:northWestCorner);
                             sh:class s:GeoCoordinates ;
                             sh:minCount 1;
                         ] ;
