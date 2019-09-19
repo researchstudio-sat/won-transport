@@ -51,7 +51,7 @@ public class AgreementCanceledAction extends BaseEventBotAction {
     protected void doRun(Event event, EventListener executingListener) throws Exception {
         EventListenerContext ctx = getEventListenerContext();
 
-        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof AgreementCancellationRequestedEvent || event instanceof AgreementCancellationAcceptedEvent|| event instanceof CloseFromOtherAtomEvent)) { //TODO: CLOSE FROM OTHER NEED IS NOT REALLY COOL TO DO HERE
+        if(ctx.getBotContextWrapper() instanceof TaxiBotContextWrapper && (event instanceof AgreementCancellationRequestedEvent || event instanceof AgreementCancellationAcceptedEvent|| event instanceof CloseFromOtherAtomEvent)) { //TODO: CLOSE FROM OTHER ATOM IS NOT REALLY COOL TO DO HERE
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
 
             Connection connection = ((BaseAtomAndConnectionSpecificEvent) event).getCon();

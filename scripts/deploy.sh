@@ -15,7 +15,7 @@ cp -pf $DIR/../won-taxi-bot/target/taxi-bot.jar $DIR/taxi-bot/taxi-bot.jar
 rm -rf $DIR/taxi-bot/conf
 cp -rfp $DIR/../conf $DIR/taxi-bot/conf
 
-rm -rf $DIR/taxi-bot/factory-needs/
-cp -rfp $DIR/../won-taxi-bot/src/main/resources/FactoryNeeds $DIR/taxi-bot/factory-needs
+rm -rf $DIR/taxi-bot/factory-atoms/
+cp -rfp $DIR/../won-taxi-bot/src/main/resources/FactoryAtoms $DIR/taxi-bot/factory-atoms
 
 $DIR/compose-helper.sh up -d --build

@@ -39,14 +39,14 @@
         <constructor-arg name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
-    <bean id="mobileBooking" class="won.transport.taxibot.client.MobileBookingImpl">
+    <!--bean id="mobileBooking" class="won.transport.taxibot.client.MobileBooking">
         <property name="serverUrl" value="${api.serverUrl}"/>
         <property name="username" value="${api.username}"/>
         <property name="password" value="${api.password}"/>
-    </bean>
-    <!-- THE FOLLOWING MOBILEBOOKING CLASS MOCKS THE RESULTS OF REAL WS-CALLS -->
-    <!--bean id="mobileBooking" class="MobileBookingMock">
     </bean-->
+    <!-- THE FOLLOWING MOBILEBOOKING CLASS MOCKS THE RESULTS OF REAL WS-CALLS -->
+    <bean id="mobileBooking" class="won.transport.taxibot.client.MobileBookingMock">
+    </bean>
 
     <bean id="atomProducer" class="won.bot.framework.component.atomproducer.impl.DirectoryBasedAtomProducer">
         <property name="directory" value="${taxibot.bot.factoryatomfolder}"/>

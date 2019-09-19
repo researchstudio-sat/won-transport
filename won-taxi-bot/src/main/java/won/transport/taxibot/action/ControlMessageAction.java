@@ -16,7 +16,6 @@ import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.WonLinkedDataUtils;
 import won.transport.taxibot.client.entity.Parameter.*;
-import won.transport.taxibot.client.entity.Parameter.Error;
 import won.transport.taxibot.entity.ParseableResult;
 import won.transport.taxibot.impl.TaxiBotContextWrapper;
 
@@ -46,9 +45,9 @@ public class ControlMessageAction extends BaseEventBotAction {
             EventBus eventBus = ctx.getEventBus();
             Connection con = ((MessageFromOtherAtomEvent) event).getCon();
             TaxiBotContextWrapper taxiBotContextWrapper = (TaxiBotContextWrapper) ctx.getBotContextWrapper();
-            MessageFromOtherAtomEvent messageFromOtherNeedEvent = (MessageFromOtherAtomEvent) event;
+            MessageFromOtherAtomEvent messageFromOtherAtomEvent = (MessageFromOtherAtomEvent) event;
 
-            String textMessage = WonRdfUtils.MessageUtils.getTextMessage(messageFromOtherNeedEvent.getWonMessage());
+            String textMessage = WonRdfUtils.MessageUtils.getTextMessage(messageFromOtherAtomEvent.getWonMessage());
 
             if ("status".equals(textMessage)) {
                 publishAnalyzingMessage(con);

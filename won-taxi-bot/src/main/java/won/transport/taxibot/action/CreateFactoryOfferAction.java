@@ -43,7 +43,6 @@ import won.protocol.util.DefaultAtomModelWrapper;
 import won.protocol.util.AtomModelWrapper;
 import won.protocol.util.RdfUtils;
 import won.protocol.util.WonRdfUtils;
-import won.protocol.vocabulary.WON;
 import won.protocol.vocabulary.WONMATCH;
 import won.transport.taxibot.service.InformationExtractor;
 
@@ -56,7 +55,7 @@ import java.net.URI;
  */
 public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final URI STUB_NEED_URI = URI.create("http://example.com/content");
+    private static final URI STUB_ATOM_URI = URI.create("http://example.com/content");
     private static final URI STUB_SHAPES_URI = URI.create("http://example.com/shapes");
 
     private static final String goalString;
@@ -84,10 +83,10 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
         Model factoryOfferModel = createFactoryOfferFromTemplate(ctx, factoryHintEvent.getFactoryAtomURI(), factoryHintEvent.getRequesterURI());
         URI factoryOfferURI = WonRdfUtils.AtomUtils.getAtomURI(factoryOfferModel);
         Model shapesModel = createShapesModelFromTemplate(ctx, factoryHintEvent.getFactoryAtomURI());
-        //TODO: ADD BOT ALREADY PROCESSED THE NEEDURI FOR THIS FACTORY OFFER
+        //TODO: ADD BOT ALREADY PROCESSED THE ATOMURI FOR THIS FACTORY OFFER
         logger.debug("creating factoryoffer on won node {} with content {} ", wonNodeUri, StringUtils.abbreviate(RdfUtils.toString(factoryOfferModel), 150));
 
-        WonMessage createNeedMessage = createWonMessage(ctx.getWonNodeInformationService(), factoryOfferURI, wonNodeUri, factoryOfferModel, shapesModel);
+        WonMessage createAtomMessage = createWonMessage(ctx.getWonNodeInformationService(), factoryOfferURI, wonNodeUri, factoryOfferModel, shapesModel);
         EventBotActionUtils.rememberInList(ctx, factoryOfferURI, uriListName);
 
         EventListener successCallback = successEvent -> {
@@ -104,26 +103,25 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
             EventBotActionUtils.removeFromList(getEventListenerContext(), factoryOfferURI, uriListName);
         };
 
-        EventBotActionUtils.makeAndSubscribeResponseListener(createNeedMessage, successCallback, failureCallback, getEventListenerContext());
+        EventBotActionUtils.makeAndSubscribeResponseListener(createAtomMessage, successCallback, failureCallback, getEventListenerContext());
 
-        logger.debug("registered listeners for response to message URI {}", createNeedMessage.getMessageURI());
-        getEventListenerContext().getWonMessageSender().sendWonMessage(createNeedMessage);
-        logger.debug("factoryoffer creation message sent with message URI {}", createNeedMessage.getMessageURI());
+        logger.debug("registered listeners for response to message URI {}", createAtomMessage.getMessageURI());
+        getEventListenerContext().getWonMessageSender().sendWonMessage(createAtomMessage);
+        logger.debug("factoryoffer creation message sent with message URI {}", createAtomMessage.getMessageURI());
 
     }
 
-    private Model createFactoryOfferFromTemplate(EventListenerContext ctx, URI factoryNeedURI, URI requesterURI){
+    private Model createFactoryOfferFromTemplate(EventListenerContext ctx, URI factoryAtomURI, URI requesterURI){
         //TODO: retrieve real template from factory
-        Dataset factoryNeedDataSet = ctx.getLinkedDataSource().getDataForResource(factoryNeedURI);
-        DefaultAtomModelWrapper factoryNeedModelWrapper = new DefaultAtomModelWrapper(factoryNeedDataSet);
+        Dataset factoryAtomDataSet = ctx.getLinkedDataSource().getDataForResource(factoryAtomURI);
+        DefaultAtomModelWrapper factoryAtomModelWrapper = new DefaultAtomModelWrapper(factoryAtomDataSet);
 
-        Dataset requesterNeedDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
-        DefaultAtomModelWrapper requesterNeedModelWrapper = new DefaultAtomModelWrapper(requesterNeedDataSet);
+        Dataset requesterAtomDataSet = ctx.getLinkedDataSource().getDataForResource(requesterURI);
+        DefaultAtomModelWrapper requesterAtomModelWrapper = new DefaultAtomModelWrapper(requesterAtomDataSet);
 
-        String connectTitle =  "Test TaxiBot Offer";//factoryNeedModelWrapper.getSomeTitleFromIsOrAll() + "-" + requesterNeedModelWrapper.getSomeTitleFromIsOrAll();
+        String connectTitle =  "TaxiBot Offer";//factoryAtomModelWrapper.getSomeTitleFromIsOrAll() + "-" + requesterAtomModelWrapper.getSomeTitleFromIsOrAll();
 
-        final URI atomURI = ctx.getWonNodeInformationService().generateAtomURI(ctx.getNodeURISource().getNodeURI());
-        DefaultAtomModelWrapper atomModelWrapper = new DefaultAtomModelWrapper(atomURI.toString());
+        DefaultAtomModelWrapper atomModelWrapper = new DefaultAtomModelWrapper(ctx.getWonNodeInformationService().generateAtomURI(ctx.getNodeURISource().getNodeURI()).toString());
 
         atomModelWrapper.setTitle(connectTitle);
         //atomModelWrapper.setDescription("This is a automatically created atom by the TaxiBot");
@@ -140,7 +138,7 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
         return atomModelWrapper.copyAtomModel(AtomGraphType.ATOM);
     }
 
-    private Model createShapesModelFromTemplate(EventListenerContext ctx, URI factoryNeedURI) {
+    private Model createShapesModelFromTemplate(EventListenerContext ctx, URI factoryAtomURI) {
         Dataset dataset = DatasetFactory.createGeneral();
         RDFDataMgr.read(dataset, new ByteArrayInputStream(goalString.getBytes()), RDFFormat.TRIG.getLang());
 
@@ -161,7 +159,7 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
 
         Dataset contentDataset = DatasetFactory.createGeneral();
 
-        contentDataset.addNamedModel(STUB_NEED_URI.toString(), atomModel);
+        contentDataset.addNamedModel(STUB_ATOM_URI.toString(), atomModel);
         contentDataset.addNamedModel(STUB_SHAPES_URI.toString(), shapesModel);
 
         return WonMessageBuilder.setMessagePropertiesForCreate(
