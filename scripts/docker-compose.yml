@@ -11,7 +11,7 @@ services:
       - "won.node.uris=${WON_NODE_BASE}/won/resource"
       - "uri.prefix.owner=${WON_NODE_BASE}/taxi_bot"  # set this for the trust store alias
       - "taxibot.name=Taxi Service Bot"
-      - "taxibot.bot.factoryneedfolder=/usr/src/factory-needs"
+      - "taxibot.bot.factoryatomfolder=/usr/src/factory-atoms"
 
       # keystore properties
       - "keystore.password"

@@ -1,0 +1,59 @@
+<!--
+  ~ Copyright 2012  Research Studios Austria Forschungsges.m.b.H.
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="taxiBot" class="won.transport.taxibot.impl.TaxiBot">
+        <property name="botContextWrapper" ref="botContextWrapper" />
+        <property name="taskScheduler" ref="taskScheduler" />
+        <property name="atomProducer" ref="atomProducer" />
+        <property name="trigger">
+            <bean class="org.springframework.scheduling.support.PeriodicTrigger">
+                <constructor-arg name="period" value="60000" />
+                <constructor-arg name="timeUnit" value="MILLISECONDS" />
+                <property name="initialDelay" value="10000" /> <!-- wait 10s at the beginning -->
+                <property name="fixedRate" value="false" />  <!-- fixed delay after completion -->
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="botContextWrapper" class="won.transport.taxibot.impl.TaxiBotContextWrapper">
+        <constructor-arg name="botContext" ref="${botContext.impl}"/>
+        <constructor-arg name="botName" value="${taxibot.name}"/>
+        <constructor-arg name="mobileBooking" ref="mobileBooking"/>
+    </bean>
+
+    <bean id="mobileBooking" class="won.transport.taxibot.client.MobileBookingImpl">
+        <property name="serverUrl" value="${api.serverUrl}"/>
+        <property name="username" value="${api.username}"/>
+        <property name="password" value="${api.password}"/>
+    </bean>
+    <!-- THE FOLLOWING MOBILEBOOKING CLASS MOCKS THE RESULTS OF REAL WS-CALLS -->
+    <!--bean id="mobileBooking" class="MobileBookingMock">
+    </bean-->
+
+    <bean id="atomProducer" class="won.bot.framework.component.atomproducer.impl.DirectoryBasedAtomProducer">
+        <property name="directory" value="${taxibot.bot.factoryatomfolder}"/>
+        <property name="filenameFilterRegex" value="^[^\.].*\.ttl"/>
+        <property name="repeat" value="false"/>
+        <property name="fileBasedAtomProducer">
+            <bean class="won.bot.framework.component.atomproducer.impl.TurtleFileAtomProducer"/>
+        </property>
+    </bean>
+</beans>
