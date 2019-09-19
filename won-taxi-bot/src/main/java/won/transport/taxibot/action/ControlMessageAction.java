@@ -16,6 +16,7 @@ import won.protocol.model.Connection;
 import won.protocol.util.WonRdfUtils;
 import won.protocol.util.linkeddata.WonLinkedDataUtils;
 import won.transport.taxibot.client.entity.Parameter.*;
+import won.transport.taxibot.client.entity.Parameter.Error;
 import won.transport.taxibot.entity.ParseableResult;
 import won.transport.taxibot.impl.TaxiBotContextWrapper;
 

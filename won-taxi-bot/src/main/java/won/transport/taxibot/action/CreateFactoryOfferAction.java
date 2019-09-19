@@ -131,7 +131,7 @@ public class CreateFactoryOfferAction extends AbstractCreateAtomAction {
 
         int i = 1;
         for(URI socket : sockets){
-            atomModelWrapper.addSocket(atomURI + "#socket" + i, socket.toString());
+            atomModelWrapper.addSocket(factoryAtomURI + "#socket" + i, socket.toString());
             i++;
         }
 
