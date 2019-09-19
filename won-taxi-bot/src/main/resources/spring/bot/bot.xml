@@ -35,7 +35,7 @@
 
     <bean id="botContextWrapper" class="won.transport.taxibot.impl.TaxiBotContextWrapper">
         <constructor-arg name="botContext" ref="${botContext.impl}"/>
-        <constructor-arg name="botName" value="${taxibot.name}"/>
+        <constructor-arg name="botName" value="${bot.name}"/>
         <constructor-arg name="mobileBooking" ref="mobileBooking"/>
     </bean>
 
