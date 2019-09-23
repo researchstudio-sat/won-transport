@@ -10,7 +10,7 @@ ENV WON_CONFIG_DIR=/usr/src/conf
 ENV LOGBACK_CONFIG=logback.xml
 
 # add the default monitoring output directory
-ENV TAXI_BOT=won.transport.taxi.bot.app.TaxiBotApp
+ENV TAXI_BOT=TaxiBotApp
 
 # add the jar and the conf directory
 ADD ./taxi-bot.jar /usr/src/

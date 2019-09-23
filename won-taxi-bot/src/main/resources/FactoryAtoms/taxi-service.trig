@@ -41,7 +41,8 @@
 																						   s:longitude  "16.355209"
 																						 ] ;
 																 won:southEastCorner  [ a            s:GeoCoordinates ;
-																						   s:latitude   "48.218489" ;
+																						  
+ s:latitude   "48.218489" ;
 																						   s:longitude  "16.384895"
 																						 ]
 															   ] ;

@@ -6,7 +6,7 @@ oln-test:taxiService1
   a won:Atom;
   a s:TaxiService;
   won:flag won:NoHintForCounterpart;
-  won:is [
+
     dc:title "Taxi in Wien"@de;
     dc:description "Biete Taxidienstleistungen im Raum Wien und Umgebung"@de;
     dc:title "Taxi in Vienna"@en;
@@ -34,8 +34,7 @@ oln-test:taxiService1
      ] ;
      s:name              "Wien, Österreich"@de;
      s:name              "Vienna, Austria"@en
-   ]
-  ];
+    ];
   won:seeks [
     won:seeks [
       dc:title "Taxi";
