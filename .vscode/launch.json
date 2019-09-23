@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-TaxiBotApp<won-taxi-bot>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "won.transport.taxibot.TaxiBotApp",
+            "projectName": "won-taxi-bot",
+            "args": ""
+        }
+    ]
+}
