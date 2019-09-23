@@ -49,3 +49,6 @@ jspm_packages/
 
 #generated files (e.g. styles)
 **/generated/
+
+#secrets
+.secrets/
